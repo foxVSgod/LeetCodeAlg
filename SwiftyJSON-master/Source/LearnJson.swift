@@ -59,11 +59,32 @@ public enum Type: Int{
     case dictionary
     case null
     case unknown
-
 }
 
 public struct EMJSON{
-    public init(data: Data, options opt: JSONSerialization.ReadingOptions = []) 
+
+
+    public var object:Any{
+        get{
+
+
+
+        }
+
+    }
+
+
+
+
+    public init(data: Data, options opt: JSONSerialization.ReadingOptions = []) throws{
+        let object:Any = try JSONSerialization.jsonObject(with: Data, options: opt)
+//        self.ini
+    }
+
+    fileprivate init(jsonObject:Any){
+        self.
+    }
+
 
 }
 

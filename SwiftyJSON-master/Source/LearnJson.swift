@@ -46,12 +46,11 @@ extension LearnJsonError: CustomNSError{
             return [NSLocalizedDescriptionKey: "JSON is invalid."]
         case .notExist:
             return [NSLocalizedDescriptionKey: "Dictionary key does not exist."]
-        default:
         }
     }
 }
 
-public enum Type: Int{
+public enum JsonType: Int{
     case number
     case string
     case bool
@@ -61,17 +60,63 @@ public enum Type: Int{
     case unknown
 }
 
+
+private func unwrapobject( object:Any) -> Any{
+    switch object {
+    case let json as JSON:
+        return unwrapobject(object: json.object)
+    case let array as [Any]:
+        return array.map(unwrapobject)
+    case let 
+    default:
+
+        <#code#>
+    }
+}
+
+
 public struct EMJSON{
+    fileprivate var rawArray: [Any] = []
+    fileprivate var rawDictionary: [String : Any] = [:]
+    fileprivate var rawString: String = ""
+    fileprivate var rawNumber :NSNumber = 0
+    fileprivate var rawNull: NSNull = NSNull()
+    fileprivate var rawBool: Bool = false
 
-
+    public fileprivate(set) var type:JsonType = .null
+    public fileprivate(set) var error:LearnJsonError
     public var object:Any{
-        get{
-
+        get {
+            switch self.type {
+            case .array:
+                return self.rawArray
+            case .dictionary:
+                return self.rawDictionary
+            case .string:
+                return self.rawString
+            case .number:
+                return self.rawNumber
+            case .bool:
+                return self.rawBool
+            default:
+                return self.rawNull
+            }
+        }
+        set {
+            error = nil
+            switch unwa  {
+            case <#pattern#>:
+                <#code#>
+            default:
+                <#code#>
+            }
 
 
         }
-
     }
+
+
+
 
 
 

@@ -60,21 +60,6 @@ public enum JsonType: Int{
     case unknown
 }
 
-
-private func unwrapobject( object:Any) -> Any{
-    switch object {
-    case let json as JSON:
-        return unwrapobject(object: json.object)
-    case let array as [Any]:
-        return array.map(unwrapobject)
-    case let 
-    default:
-
-        <#code#>
-    }
-}
-
-
 public struct EMJSON{
     fileprivate var rawArray: [Any] = []
     fileprivate var rawDictionary: [String : Any] = [:]
@@ -104,34 +89,125 @@ public struct EMJSON{
         }
         set {
             error = nil
-            switch unwa  {
-            case <#pattern#>:
-                <#code#>
+            switch unwrapobject(object: newValue)  {
+            case let number as NSNumber:
+                JsonType = .bool
+                self.rawBool = number.boolValue
+            case let array as [Any]:
+                type = .array
+                self.rawArray = array
+            case let dictionary as [String: Any]:
+                type = .dictionary
+                self.rawDictionary = dictionary
             default:
-                <#code#>
+                type = .unknown
+                error = LearnJsonError.unsupportedType
             }
-
-
         }
     }
-
-
-
-
-
-
+    @available(*, unavailable ,renamed:"null")
+    public static var nullJSON:JSON { return null }
+    public static var null: JSON { return JSON(NSNull()) }
 
     public init(data: Data, options opt: JSONSerialization.ReadingOptions = []) throws{
         let object:Any = try JSONSerialization.jsonObject(with: Data, options: opt)
-//        self.ini
     }
 
     fileprivate init(jsonObject:Any){
-        self.
+        self.object = jsonObject
     }
 
+    fileprivate mutating func merge(with other: JSON, typecheck:Bool) throws{
+        if  self.type == other.type {
+            switch self.type {
+            case .dictionary:
+                for(key , _) in other{
+                    try self[key].merge(with: other[key])
+                }
+            case .array
+                self = JSON(self.rawArray + other.array)
+            default:
+                self = other
+            }
+        }else{
+            if typecheck {
+                throw SwiftyJSONError.wrongType
+            }else{
+                self =  other
+            }
+        }
+    }
 
+    public mutating func merged(with other:JSON) throws -> JSON{
+        var merged = self
+        try merged.merge(with: other, typecheck: true)
+        return merged
+    }
+
+    public mutating func merged(with other:JSON) throws{
+        try self.merge(with: other, typecheck: true)
+    }
+
+    public init(parseJSON jsonString:String){
+        if  let data = jsonString.data(using: .utf8) {
+            self.init(data: data)
+        }else{
+            self.init(NSNull()
+        }
+    }
 }
+
+private func unwrapobject( object:Any) -> Any{
+    switch object {
+    case let json as EMJSON:
+        return unwrapobject(object: json.object)
+    case let array as [Any]:
+        return array.map(unwrapobject)
+    case let dictionary as [String: Any]:
+        var unwarppedDic = dictionary
+        for (k,v) in dictionary{
+            unwarppedDic[k] = unwrapobject(object: v)
+        }
+        return unwarppedDic
+    default:
+        return object
+    }
+}
+
+public enum EMIndex<T:Any> :Comparable{
+    case array(Int)
+    case dictionaray(DictionaryIndex<String,T>)
+    case null
+
+    static public func == (lhs:EMIndex, rhs:EMIndex) ->Bool{
+        switch (lhs, rhs) {
+        case (.array(let left),.array(let right)):
+            return left < right
+        case (.dictionary(let left),.dictionary(let right)):
+            return left < right
+        default:
+            return false
+        }
+    }
+
+    static public func < (lhs: Index, rhs:Index) -> Bool{
+        switch (lhs, rhs) {
+        case (.array(let left), .array(let right)):
+            return left < right
+        case (.dictionary(let left), .dictionary(let right)):
+            return left < right
+        default:
+            return false
+        }
+    }
+}
+//
+//public typealias JSONIndex = Index<JSON>
+//public typealias JSONRawIndex = Index<Any>
+//
+//
+
+
 
 class LearnJson: NSObject {
 

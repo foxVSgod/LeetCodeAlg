@@ -69,7 +69,7 @@ public struct EMJSON{
     fileprivate var rawBool: Bool = false
 
     public fileprivate(set) var type:JsonType = .null
-    public fileprivate(set) var error:LearnJsonError
+    public fileprivate(set) var error: LearnJsonError?
     public var object:Any{
         get {
             switch self.type {
@@ -89,10 +89,15 @@ public struct EMJSON{
         }
         set {
             error = nil
-            switch unwrapobject(object: newValue)  {
+            switch unwrapobject(object: newValue) {
             case let number as NSNumber:
-                JsonType = .bool
-                self.rawBool = number.boolValue
+                if number.isBool{
+                   self.rawBool = number.boolValue
+                   type = .bool
+                }else{
+                   type = .number
+                    self.rawNumber = number
+                }
             case let array as [Any]:
                 type = .array
                 self.rawArray = array

@@ -6,8 +6,7 @@
 //
 //
 
-import UIKit
-
+import Foundation
 public enum LearnJsonError: Int, Swift.Error{
     case unsupportedType = 999
     case indexOutOfBounds = 900
@@ -115,51 +114,70 @@ public struct EMJSON{
     public static var null: JSON { return JSON(NSNull()) }
 
     public init(data: Data, options opt: JSONSerialization.ReadingOptions = []) throws{
-        let object:Any = try JSONSerialization.jsonObject(with: Data, options: opt)
+        let object:Any = try JSONSerialization.jsonObject(with: data, options: opt)
+        self.init(jsonObject: object)
     }
 
     fileprivate init(jsonObject:Any){
         self.object = jsonObject
     }
 
-    fileprivate mutating func merge(with other: JSON, typecheck:Bool) throws{
-        if  self.type == other.type {
-            switch self.type {
-            case .dictionary:
-                for(key , _) in other{
-                    try self[key].merge(with: other[key])
-                }
-            case .array
-                self = JSON(self.rawArray + other.array)
-            default:
-                self = other
-            }
-        }else{
-            if typecheck {
-                throw SwiftyJSONError.wrongType
-            }else{
-                self =  other
-            }
-        }
+    fileprivate mutating func merge(with other: EMJSON, typecheck:Bool) throws{
+//        if  self.type == other.type {
+//            switch self.type {
+//            case .dictionary:
+//                for(key , _) in other{
+//                    try self[key].merge(with: other[key])
+//                }
+//            case .array :
+//                self = EMJSON(self.rawArray + other.rawArray)
+//            default:
+//                self = other
+//            }
+//        }else{
+//            if typecheck {
+//                throw SwiftyJSONError.wrongType
+//            }else{
+//                self =  other
+//            }
+//        }
     }
 
-    public mutating func merged(with other:JSON) throws -> JSON{
+    public mutating func merged(with other:EMJSON) throws -> EMJSON{
         var merged = self
         try merged.merge(with: other, typecheck: true)
         return merged
     }
 
-    public mutating func merged(with other:JSON) throws{
+    public mutating func merged(with other:EMJSON) throws{
         try self.merge(with: other, typecheck: true)
+    }
+
+    public init(_ object: Any){
+        switch object {
+        case let object as Data:
+            do{
+                try self.init(data: object)
+            }catch{
+                self.init(jsonObject: NSNull())
+            }
+        default:
+            self.init(jsonObject: object)
+        }
     }
 
     public init(parseJSON jsonString:String){
         if  let data = jsonString.data(using: .utf8) {
-            self.init(data: data)
+            self.init(data)
         }else{
-            self.init(NSNull()
+            self.init(NSNull())
         }
     }
+
+
+
+
+
 }
 
 private func unwrapobject( object:Any) -> Any{
@@ -179,41 +197,43 @@ private func unwrapobject( object:Any) -> Any{
     }
 }
 
-public enum EMIndex<T:Any> :Comparable{
-    case array(Int)
-    case dictionaray(DictionaryIndex<String,T>)
-    case null
+//public enum EMIndex<T:Any> :Comparable{
+//    case array(Int)
+//    case dictionaray(DictionaryIndex<String,T>)
+//    case null
+//
+//    static public func == (lhs:EMIndex, rhs:EMIndex) ->Bool{
+//        switch (lhs, rhs) {
+//        case (.array(let left),.array(let right)):
+//            return left < right
+//        case (.dictionary(let left),.dictionary(let right)):
+//            return left < right
+//        default:
+//            return false
+//        }
+//    }
+//
+//    static public func < (lhs: EMJsonIndex, rhs:EMJsonIndex) -> Bool{
+//        switch (lhs, rhs) {
+//        case (.array(let left), .array(let right)):
+//            return left < right
+//        case (.dictionary(let left), .dictionary(let right)):
+//            return left < right
+//        default:
+//            return false
+//        }
+//    }
+//}
 
-    static public func == (lhs:EMIndex, rhs:EMIndex) ->Bool{
-        switch (lhs, rhs) {
-        case (.array(let left),.array(let right)):
-            return left < right
-        case (.dictionary(let left),.dictionary(let right)):
-            return left < right
-        default:
-            return false
-        }
-    }
+public typealias EMJsonIndex = Index<EMJSON>
+public typealias EMJsonRawIndex = Index<Any>
 
-    static public func < (lhs: Index, rhs:Index) -> Bool{
-        switch (lhs, rhs) {
-        case (.array(let left), .array(let right)):
-            return left < right
-        case (.dictionary(let left), .dictionary(let right)):
-            return left < right
-        default:
-            return false
-        }
-    }
+extension EMJSON: Swift.Collection{
+    public typealias
+
+
+
 }
-//
-//public typealias JSONIndex = Index<JSON>
-//public typealias JSONRawIndex = Index<Any>
-//
-//
 
 
 
-class LearnJson: NSObject {
-
-}

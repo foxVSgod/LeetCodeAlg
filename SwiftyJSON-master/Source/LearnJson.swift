@@ -167,17 +167,12 @@ public struct EMJSON{
     }
 
     public init(parseJSON jsonString:String){
-        if  let data = jsonString.data(using: .utf8) {
+        if let data = jsonString.data(using: .utf8) {
             self.init(data)
         }else{
             self.init(NSNull())
         }
     }
-
-
-
-
-
 }
 
 private func unwrapobject( object:Any) -> Any{
@@ -225,15 +220,311 @@ private func unwrapobject( object:Any) -> Any{
 //    }
 //}
 
+extension EMJSON{
+    // optional [EMJson]
+    public var array: [EMJSON]? {
+        if  self.type == .array {
+            return self.rawArray.map {
+                EMJSON($0)
+            }
+        }else{
+            return nil
+        }
+    }
+    // Non-optional [EMJson]
+    public var arrayValue: [EMJSON] {
+        return self.array ?? []
+    }
+
+    public var arrayObject: [Any]? {
+        get {
+            switch self.type {
+            case .array:
+                return self.arrayValue
+            default:
+                return nil
+            }
+        }
+        set {
+            if  let array = newValue {
+                self.object = array as Any
+            }else {
+                self.object = NSNull()
+            }
+        }
+    }
+}
+
+extension EMJSON{
+    public var dictionary: [String: EMJSON]? {
+        if self.type == .dictionary {
+            var d = [String : EMJSON].init(minimumCapacity: rawDictionary.count)
+            for (key , value ) in rawDictionary{
+                d[key] = EMJSON(value)
+            }
+            return d
+        }else {
+            return nil
+        }
+    }
+
+    public var dictionaryValue:[String : EMJSON] {
+        return self.dictionary ?? [:]
+    }
+
+    public var dictionargValue:[String : Any]? {
+        get {
+            switch self.type {
+            case .dictionary:
+                return self.rawDictionary
+            default:
+                return nil
+            }
+        }
+        set {
+            if let v = newValue {
+                self.object = v as Any
+            }else{
+                self.object = NSNull()
+            }
+        }
+    }
+}
+
+extension EMJSON{
+    public var bool : Bool? {
+        get {
+            switch self.type {
+            case .bool:
+                return self.rawBool
+            default:
+                return nil
+            }
+        }
+        set {
+            if let newValue = newValue {
+                self.object = newValue as Bool
+            }else{
+                self.object = NSNull()
+            }
+        }
+    }
+    public var boolValue: Bool {
+        get {
+            switch  self.type {
+            case .bool:
+                return self.rawBool
+            case .number:
+                return self.rawNumber.boolValue
+            case .string:
+                return ["true", "y", "t"].contains { (truthyString) in
+                    return self.rawString.caseInsensitiveCompare(truthyString) == .orderedSame
+                }
+            default:
+                return false
+            }
+        }
+        set {
+            self.object = newValue
+        }
+    }
+}
+
+extension EMJSON{
+    public var string: String? {
+        get {
+            switch self.type {
+            case .string:
+                return self.object as? String
+            default:
+                return nil
+            }
+        }
+        set {
+            if  let newValue = newValue {
+                self.object = NSString(string:newValue)
+            }else{
+                self.object = NSNull()
+            }
+        }
+    }
+
+
+    public var stringValue: String {
+        get  {
+            switch self.type {
+            case .string:
+                return self.object as? String ?? ""
+            case .number:
+                return self.rawNumber.stringValue
+            case .bool:
+                return (self.object as? Bool).map{ String($0) } ?? ""
+            default:
+                return self.rawNumber.stringValue
+            }
+        }
+        set  {
+            self.object = NSString(string:newValue)
+        }
+    }
+}
+
+extension EMJSON{
+    public var number:NSNumber? {
+        get {
+            switch self.type {
+            case .number:
+                return self.rawNumber
+            case .bool:
+                return NSNumber.init(value: self.rawBool ? 1:0)
+            default:
+                return nil
+            }
+        }
+        set {
+            self.object = newValue ?? NSNull()
+        }
+    }
+
+    public var numberValue:NSNumber {
+        get {
+            switch self.type {
+            case .string:
+                let decimal = NSDecimalNumber.init(string: self.object as? String)
+                if  decimal == NSDecimalNumber.notANumber {
+                    return NSDecimalNumber.zero
+                }
+                return decimal
+            case .number:
+                return self.object as? NSNumber ?? NSNumber.init(value: 0)
+            default:
+                return NSNumber.init(value: 0.0)
+            }
+        }
+        set {
+            self.object = numberValue
+        }
+    }
+}
+
+extension EMJSON{
+    public var null: NSNull? {
+        get {
+            switch self.type {
+            case .null:
+                return self.rawNull
+            default:
+                return nil
+            }
+        }
+        set {
+            self.object = NSNull()
+        }
+    }
+    public func exists() ->Bool {
+        if let errorValue = error, (400...1000).contains(errorValue.errorCdoe){
+            return false
+        }
+      return true
+    }
+}
+
+extension EMJSON{
+    public var url:URL? {
+        get {
+            switch self.type {
+            case .string:
+                if self.rawString.range(of: "%[0-9A-Fa-f]{2}",options: .regularExpression,range: nil, locale:  nil) != nil{
+                    return Foundation.URL.init(string: self.rawString)
+                } else if let encodedstring = self.rawString.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlHostAllowed){
+                    return Foundation.URL.init(string: encodedstring)
+                }
+                return Foundation.URL.init(string: self.rawString)
+            default:
+                return nil
+            }
+        }
+        set {
+            self.object = newValue?.absoluteString ?? NSNull()
+        }
+    }
+}
+
+extension EMJSON{
+    public var double: Double? {
+        set {
+            if let newValue = newValue {
+                self.object = NSNumber(value:newValue)
+            }else{
+                self.object = NSNull()
+            }
+        }
+        get {
+            return self.number?.doubleValue
+        }
+    }
+    public var doubleValue:Double{
+        set {
+            self.object = NSNumber.init(value: newValue)
+        }
+        get {
+            return self.numberValue.doubleValue
+        }
+    }
+    public var float: Float? {
+        get {
+            return self.number?.floatValue
+        }
+        set {
+            if  let newValue = newValue {
+                self.object = NSNumber.init(value: newValue)
+            }else{
+                self.object = NSNull()
+            }
+        }
+    }
+    public var floatValue :Float {
+        get {
+            return self.numberValue.floatValue
+        }
+        set {
+            self.object = NSNumber.init(value: newValue)
+
+        }
+    }
+    public var int: Int? {
+        set {
+            if let value = newValue {
+                self.object = NSNumber.init(value: value)
+            }else{
+                self.object = NSNull()
+            }
+        }
+        get {
+            return self.number?.intValue
+        }
+    }
+    public var intvalue:Int{
+        get {
+            return self.numberValue.intValue
+        }
+        set {
+            self.object = NSNumber.init(value: newValue)
+        }
+    }
+
+}
+
+
 public typealias EMJsonIndex = Index<EMJSON>
 public typealias EMJsonRawIndex = Index<Any>
 
-extension EMJSON: Swift.Collection{
-    public typealias
-
-
+extension EMJSON: Swift.Collection{}
+public func ==(lhs:EMJSON , rhs:EMJSON) ->Bool{
+    return true
 
 }
+
 
 
 

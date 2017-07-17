@@ -72,6 +72,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		10F0B02D1F1D06E500BC3D90 /* PlayerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlayerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CDD1E457181DFCA30210454 /* Pods_PlayerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlayerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		701C24691E0844C600232AAB /* WMPlayer.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = WMPlayer.gif; sourceTree = "<group>"; };
 		A41F0B6E980617F314AD7227 /* Pods-PlayerDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlayerDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-PlayerDemo/Pods-PlayerDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -174,15 +175,14 @@
 		BF16245D1DF50011006209D1 /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
 		BF16245E1DF50011006209D1 /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		BF16245F1DF50011006209D1 /* TestViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestViewController.xib; sourceTree = "<group>"; };
-		BF1624BB1DF50182006209D1 /* FastForwardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastForwardView.h; sourceTree = "<group>"; };
-		BF1624BC1DF50182006209D1 /* FastForwardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FastForwardView.m; sourceTree = "<group>"; };
-		BF1624BD1DF50182006209D1 /* FastForwardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FastForwardView.xib; sourceTree = "<group>"; };
+		BF1624BB1DF50182006209D1 /* FastForwardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FastForwardView.h; path = View/FastForwardView.h; sourceTree = "<group>"; };
+		BF1624BC1DF50182006209D1 /* FastForwardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FastForwardView.m; path = View/FastForwardView.m; sourceTree = "<group>"; };
+		BF1624BD1DF50182006209D1 /* FastForwardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FastForwardView.xib; path = View/FastForwardView.xib; sourceTree = "<group>"; };
 		BF1624BE1DF50182006209D1 /* WMLightView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMLightView.h; sourceTree = "<group>"; };
 		BF1624BF1DF50182006209D1 /* WMLightView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMLightView.m; sourceTree = "<group>"; };
 		BF1624C01DF50182006209D1 /* WMPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WMPlayer.bundle; sourceTree = "<group>"; };
 		BF1624C11DF50182006209D1 /* WMPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMPlayer.h; sourceTree = "<group>"; };
 		BF1624C21DF50182006209D1 /* WMPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMPlayer.m; sourceTree = "<group>"; };
-		C4EC7F3C1DF4FCD2006E9820 /* PlayerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PlayerDemo.app; path = "/Users/nixinsheng/Desktop/wo_iphone/Iphone/wenming/build/Debug-iphoneos/PlayerDemo.app"; sourceTree = "<absolute>"; };
 		C4EC7F401DF4FCD2006E9820 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C4EC7F421DF4FCD2006E9820 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C4EC7F431DF4FCD2006E9820 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -427,6 +427,9 @@
 		BF1624B91DF50182006209D1 /* WMPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				BF1624BB1DF50182006209D1 /* FastForwardView.h */,
+				BF1624BC1DF50182006209D1 /* FastForwardView.m */,
+				BF1624BD1DF50182006209D1 /* FastForwardView.xib */,
 				BF1624BA1DF50182006209D1 /* View */,
 				BF1624C01DF50182006209D1 /* WMPlayer.bundle */,
 				BF1624C11DF50182006209D1 /* WMPlayer.h */,
@@ -439,9 +442,6 @@
 		BF1624BA1DF50182006209D1 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				BF1624BB1DF50182006209D1 /* FastForwardView.h */,
-				BF1624BC1DF50182006209D1 /* FastForwardView.m */,
-				BF1624BD1DF50182006209D1 /* FastForwardView.xib */,
 				BF1624BE1DF50182006209D1 /* WMLightView.h */,
 				BF1624BF1DF50182006209D1 /* WMLightView.m */,
 			);
@@ -461,6 +461,7 @@
 		C4EC7F3D1DF4FCD2006E9820 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				10F0B02D1F1D06E500BC3D90 /* PlayerDemo.app */,
 			);
 			name = Products;
 			path = ..;
@@ -517,7 +518,7 @@
 			);
 			name = PlayerDemo;
 			productName = PlayerDemo;
-			productReference = C4EC7F3C1DF4FCD2006E9820 /* PlayerDemo.app */;
+			productReference = 10F0B02D1F1D06E500BC3D90 /* PlayerDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

@@ -309,6 +309,7 @@ extension EMJSON{
             }
         }
     }
+
     public var boolValue: Bool {
         get {
             switch  self.type {
@@ -421,6 +422,7 @@ extension EMJSON{
             self.object = NSNull()
         }
     }
+
     public func exists() ->Bool {
         if let errorValue = error, (400...1000).contains(errorValue.errorCdoe){
             return false
@@ -463,6 +465,7 @@ extension EMJSON{
             return self.number?.doubleValue
         }
     }
+
     public var doubleValue:Double{
         set {
             self.object = NSNumber.init(value: newValue)
@@ -471,6 +474,7 @@ extension EMJSON{
             return self.numberValue.doubleValue
         }
     }
+
     public var float: Float? {
         get {
             return self.number?.floatValue
@@ -483,6 +487,7 @@ extension EMJSON{
             }
         }
     }
+
     public var floatValue :Float {
         get {
             return self.numberValue.floatValue
@@ -492,6 +497,7 @@ extension EMJSON{
 
         }
     }
+
     public var int: Int? {
         set {
             if let value = newValue {
@@ -504,7 +510,8 @@ extension EMJSON{
             return self.number?.intValue
         }
     }
-    public var intvalue:Int{
+
+    public var intvalue:Int {
         get {
             return self.numberValue.intValue
         }
@@ -513,16 +520,238 @@ extension EMJSON{
         }
     }
 
+    public var uInt: UInt? {
+        get {
+            return self.number?.uintValue
+        }
+        set {
+            if let newvalue = newValue {
+                self.object = NSNumber.init(value: newValue)
+            }
+        }
+    }
+    public var uIntValue: UInt{
+        get {
+            return self.numberValue.uintValue
+        }
+        set {
+            self.object = NSNumber.init(value: newValue)
+        }
+    }
+
+    public var int8: Int8? {
+        get {
+            return self.number?.int8Value
+        }
+        set {
+            if  let newValue = newValue {
+                self.object = NSNumber.init(value: newValue)
+            }else{
+                self.object = NSNull()
+            }
+        }
+    }
+
+    public var int8Value: Int8 {
+        get {
+            return self.numberValue.int8Value
+        }
+        set {
+            self.object = NSNumber.init(value: Int(newValue))
+        }
+    }
+
+    public var uInt8: UInt8?{
+        get {
+            return self.number?.uint8Value
+        }
+        set {
+            if let newValue = newValue  {
+
+            }
+        }
+    }
+
+    public var uInt8Value:UInt8{
+        get {
+            return self.number?.uint8Value
+        }
+        set {
+            self.object = NSNumber.init(value: newValue)
+        }
+    }
+
+    public var int16: Int16? {
+        get {
+            return self.number?.int16Value
+        }
+        set {
+            if let newValue = newValue {
+                self.object = NSNumber(value: newValue)
+            } else {
+                self.object =  NSNull()
+            }
+        }
+    }
+
+    public var int16Value: Int16 {
+        get {
+            return self.numberValue.int16Value
+        }
+        set {
+            self.object = NSNumber(value: newValue)
+        }
+    }
+
+    public var uInt16: UInt16? {
+        get {
+            return self.number?.uint16Value
+        }
+        set {
+            if let newValue = newValue {
+                self.object = NSNumber(value: newValue)
+            } else {
+                self.object =  NSNull()
+            }
+        }
+    }
+
+    public var uInt16Value: UInt16 {
+        get {
+            return self.numberValue.uint16Value
+        }
+        set {
+            self.object = NSNumber(value: newValue)
+        }
+    }
+
+    public var int32: Int32? {
+        get {
+            return self.number?.int32Value
+        }
+        set {
+            if let newValue = newValue {
+                self.object = NSNumber(value: newValue)
+            } else {
+                self.object =  NSNull()
+            }
+        }
+    }
+
+    public var int32Value: Int32 {
+        get {
+            return self.numberValue.int32Value
+        }
+        set {
+            self.object = NSNumber(value: newValue)
+        }
+    }
+
+    public var uInt32: UInt32? {
+        get {
+            return self.number?.uint32Value
+        }
+        set {
+            if let newValue = newValue {
+                self.object = NSNumber(value: newValue)
+            } else {
+                self.object =  NSNull()
+            }
+        }
+    }
+
+    public var uInt32Value: UInt32 {
+        get {
+            return self.numberValue.uint32Value
+        }
+        set {
+            self.object = NSNumber(value: newValue)
+        }
+    }
+
+    public var int64: Int64? {
+        get {
+            return self.number?.int64Value
+        }
+        set {
+            if let newValue = newValue {
+                self.object = NSNumber(value: newValue)
+            } else {
+                self.object =  NSNull()
+            }
+        }
+    }
+
+    public var int64Value: Int64 {
+        get {
+            return self.numberValue.int64Value
+        }
+        set {
+            self.object = NSNumber(value: newValue)
+        }
+    }
+
+    public var uInt64: UInt64? {
+        get {
+            return self.number?.uint64Value
+        }
+        set {
+            if let newValue = newValue {
+                self.object = NSNumber(value: newValue)
+            } else {
+                self.object =  NSNull()
+            }
+        }
+    }
+
+    public var uInt64Value: UInt64 {
+        get {
+            return self.numberValue.uint64Value
+        }
+        set {
+            self.object = NSNumber(value: newValue)
+        }
+    }
 }
 
+
+public enum Index<T: Any>: Comparable{
+    case array(Int)
+    case dictionary(DictionaryIndex<String,T>)
+    case null
+    static public func == (lhs: Index, rhs: Index) ->Bool{
+        switch (lhs, rhs) {
+        case (.array(let left), .array(let right)):
+            return left == right
+        case (.dictionary(let left), .dictionary(let right)):
+            return left == right
+        case (.null, .null):
+            return true
+        default:
+            return false
+        }
+
+    }
+
+}
 
 public typealias EMJsonIndex = Index<EMJSON>
 public typealias EMJsonRawIndex = Index<Any>
 
-extension EMJSON: Swift.Collection{}
-public func ==(lhs:EMJSON , rhs:EMJSON) ->Bool{
-    return true
+extension EMJSON: Swift.Collection{
+    public typealias Index = EMJsonRawIndex
+    public var startIndex: Index{
+        switch type {
+        case .array:
+            return .array(rawArray.startIndex)
+        case .dictionary:
+            return .dictionary(rawDictionary.startIndex)
+        default:
+            return .null
+        }
 
+        
+    }
 }
 
 

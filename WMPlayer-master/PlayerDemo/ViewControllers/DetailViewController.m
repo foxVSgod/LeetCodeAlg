@@ -113,6 +113,7 @@
     NSLog(@"didDoubleTaped");
 }
 ///播放状态
+
 -(void)wmplayerFailedPlay:(WMPlayer *)wmplayer WMPlayerStatus:(WMPlayerState)state{
     NSLog(@"wmplayerDidFailedPlay");
 }

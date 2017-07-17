@@ -72,8 +72,6 @@ typedef NS_ENUM(NSUInteger,WMControlType) {
 @end
 
 
-
-
 /**
  *  注意⚠：本人把属性都公开到.h文件里面了，为了适配广大开发者，不同的需求可以修改属性东西，也可以直接修改源代码。
  */

@@ -184,7 +184,7 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 -(void)toOrientation:(UIInterfaceOrientation)orientation{
     if (orientation ==UIInterfaceOrientationPortrait) {//
         [stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view).with.offset(0);
+            make.top.equalTo(self.headView.mas_bottom).with.offset(-1);
             make.left.equalTo(self.view).with.offset(0);
             make.right.equalTo(self.view).with.offset(0);
             make.height.equalTo(@(playerFrame.size.height));
@@ -283,7 +283,6 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 
     self.listlayout = [[UICollectionViewFlowLayout alloc] init];
 
-
     self.listCollectView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.listlayout];
     [self.view addSubview:self.listCollectView];
 
@@ -294,7 +293,7 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
     self.listCollectView.backgroundColor = [UIColor grayColor];
 
     [self.listCollectView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(stockPlayer.mas_bottom).offset(-1);
+        make.top.equalTo(stockPlayer.mas_bottom).offset(1);
         make.left.equalTo(self.view).with.offset(0);
         make.right.equalTo(self.view).with.offset(0);
         make.height.equalTo(@(120));
@@ -313,7 +312,6 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
         [alertVC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             if (self.presentingViewController) {
                 [self dismissViewControllerAnimated:YES completion:^{
-
                 }];
             }else{
                 if (stockPlayer.isFullscreen) {//由于是push出来的，所以如果在全屏状态下，先转为非全屏（也就是人像模式Portrait）
@@ -327,12 +325,10 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
                     [self.navigationController popViewControllerAnimated:YES];
                 }
             }
-           
         }]];
         [self presentViewController:alertVC animated:YES completion:^{
         }];
     });
-    
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -349,6 +345,10 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
         [tempcell setImageUrl:[NSString stringWithFormat:@"幻灯片%ld.JPG",indexPath.row + 1]];
     }
     return tempcell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
 }
 
 - (void)releaseWMPlayer

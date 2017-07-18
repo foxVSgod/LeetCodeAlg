@@ -1,0 +1,525 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		458571FF1F1DDBB000E016AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 458571FE1F1DDBB000E016AF /* main.m */; };
+		458572021F1DDBB000E016AF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572011F1DDBB000E016AF /* AppDelegate.m */; };
+		4585720A1F1DDBB000E016AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 458572091F1DDBB000E016AF /* Assets.xcassets */; };
+		4585720D1F1DDBB000E016AF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4585720B1F1DDBB000E016AF /* LaunchScreen.storyboard */; };
+		458572211F1DE06000E016AF /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572151F1DE06000E016AF /* BaseViewController.m */; };
+		458572221F1DE06000E016AF /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572171F1DE06000E016AF /* DetailViewController.m */; };
+		458572231F1DE06000E016AF /* EMBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572191F1DE06000E016AF /* EMBaseNavigationController.m */; };
+		458572241F1DE06000E016AF /* EMStockPlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4585721B1F1DE06000E016AF /* EMStockPlayView.m */; };
+		458572261F1DE06000E016AF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4585721E1F1DE06000E016AF /* ViewController.m */; };
+		458572271F1DE06000E016AF /* WMLightView.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572201F1DE06000E016AF /* WMLightView.m */; };
+		458572291F1DF1AA00E016AF /* WMPlayer.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 458572281F1DF1AA00E016AF /* WMPlayer.bundle */; };
+		4585722C1F1DF48F00E016AF /* EMPlayCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4585722B1F1DF48F00E016AF /* EMPlayCellView.m */; };
+		458572451F1DFE0600E016AF /* 幻灯片1.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 4585722E1F1DFE0600E016AF /* 幻灯片1.JPG */; };
+		458572461F1DFE0600E016AF /* 幻灯片10.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 4585722F1F1DFE0600E016AF /* 幻灯片10.JPG */; };
+		458572471F1DFE0600E016AF /* 幻灯片11.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572301F1DFE0600E016AF /* 幻灯片11.JPG */; };
+		458572481F1DFE0600E016AF /* 幻灯片12.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572311F1DFE0600E016AF /* 幻灯片12.JPG */; };
+		458572491F1DFE0600E016AF /* 幻灯片13.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572321F1DFE0600E016AF /* 幻灯片13.JPG */; };
+		4585724A1F1DFE0600E016AF /* 幻灯片14.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572331F1DFE0600E016AF /* 幻灯片14.JPG */; };
+		4585724B1F1DFE0600E016AF /* 幻灯片15.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572341F1DFE0600E016AF /* 幻灯片15.JPG */; };
+		4585724C1F1DFE0600E016AF /* 幻灯片16.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572351F1DFE0600E016AF /* 幻灯片16.JPG */; };
+		4585724D1F1DFE0600E016AF /* 幻灯片17.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572361F1DFE0600E016AF /* 幻灯片17.JPG */; };
+		4585724E1F1DFE0600E016AF /* 幻灯片18.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572371F1DFE0600E016AF /* 幻灯片18.JPG */; };
+		4585724F1F1DFE0600E016AF /* 幻灯片19.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572381F1DFE0600E016AF /* 幻灯片19.JPG */; };
+		458572501F1DFE0600E016AF /* 幻灯片2.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572391F1DFE0600E016AF /* 幻灯片2.JPG */; };
+		458572511F1DFE0600E016AF /* 幻灯片20.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 4585723A1F1DFE0600E016AF /* 幻灯片20.JPG */; };
+		458572521F1DFE0600E016AF /* 幻灯片21.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 4585723B1F1DFE0600E016AF /* 幻灯片21.JPG */; };
+		458572531F1DFE0600E016AF /* 幻灯片22.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 4585723C1F1DFE0600E016AF /* 幻灯片22.JPG */; };
+		458572541F1DFE0600E016AF /* 幻灯片23.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 4585723D1F1DFE0600E016AF /* 幻灯片23.JPG */; };
+		458572551F1DFE0600E016AF /* 幻灯片3.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 4585723E1F1DFE0600E016AF /* 幻灯片3.JPG */; };
+		458572561F1DFE0600E016AF /* 幻灯片4.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 4585723F1F1DFE0600E016AF /* 幻灯片4.JPG */; };
+		458572571F1DFE0600E016AF /* 幻灯片5.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572401F1DFE0600E016AF /* 幻灯片5.JPG */; };
+		458572581F1DFE0600E016AF /* 幻灯片6.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572411F1DFE0600E016AF /* 幻灯片6.JPG */; };
+		458572591F1DFE0600E016AF /* 幻灯片7.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572421F1DFE0600E016AF /* 幻灯片7.JPG */; };
+		4585725A1F1DFE0600E016AF /* 幻灯片8.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572431F1DFE0600E016AF /* 幻灯片8.JPG */; };
+		4585725B1F1DFE0600E016AF /* 幻灯片9.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 458572441F1DFE0600E016AF /* 幻灯片9.JPG */; };
+		D32AA1B4E7BEC11947742F34 /* libPods-EMAudioToVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A334417981B7F89D5BE5F6 /* libPods-EMAudioToVideo.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		458571FA1F1DDBB000E016AF /* EMAudioToVideo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EMAudioToVideo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		458571FE1F1DDBB000E016AF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		458572001F1DDBB000E016AF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		458572011F1DDBB000E016AF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		458572091F1DDBB000E016AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4585720C1F1DDBB000E016AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		4585720E1F1DDBB000E016AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		458572141F1DE06000E016AF /* BaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
+		458572151F1DE06000E016AF /* BaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
+		458572161F1DE06000E016AF /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		458572171F1DE06000E016AF /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		458572181F1DE06000E016AF /* EMBaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMBaseNavigationController.h; sourceTree = "<group>"; };
+		458572191F1DE06000E016AF /* EMBaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMBaseNavigationController.m; sourceTree = "<group>"; };
+		4585721A1F1DE06000E016AF /* EMStockPlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMStockPlayView.h; sourceTree = "<group>"; };
+		4585721B1F1DE06000E016AF /* EMStockPlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMStockPlayView.m; sourceTree = "<group>"; };
+		4585721D1F1DE06000E016AF /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		4585721E1F1DE06000E016AF /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		4585721F1F1DE06000E016AF /* WMLightView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMLightView.h; sourceTree = "<group>"; };
+		458572201F1DE06000E016AF /* WMLightView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMLightView.m; sourceTree = "<group>"; };
+		458572281F1DF1AA00E016AF /* WMPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WMPlayer.bundle; sourceTree = "<group>"; };
+		4585722A1F1DF48F00E016AF /* EMPlayCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayCellView.h; sourceTree = "<group>"; };
+		4585722B1F1DF48F00E016AF /* EMPlayCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMPlayCellView.m; sourceTree = "<group>"; };
+		4585722E1F1DFE0600E016AF /* 幻灯片1.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片1.JPG"; sourceTree = "<group>"; };
+		4585722F1F1DFE0600E016AF /* 幻灯片10.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片10.JPG"; sourceTree = "<group>"; };
+		458572301F1DFE0600E016AF /* 幻灯片11.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片11.JPG"; sourceTree = "<group>"; };
+		458572311F1DFE0600E016AF /* 幻灯片12.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片12.JPG"; sourceTree = "<group>"; };
+		458572321F1DFE0600E016AF /* 幻灯片13.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片13.JPG"; sourceTree = "<group>"; };
+		458572331F1DFE0600E016AF /* 幻灯片14.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片14.JPG"; sourceTree = "<group>"; };
+		458572341F1DFE0600E016AF /* 幻灯片15.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片15.JPG"; sourceTree = "<group>"; };
+		458572351F1DFE0600E016AF /* 幻灯片16.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片16.JPG"; sourceTree = "<group>"; };
+		458572361F1DFE0600E016AF /* 幻灯片17.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片17.JPG"; sourceTree = "<group>"; };
+		458572371F1DFE0600E016AF /* 幻灯片18.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片18.JPG"; sourceTree = "<group>"; };
+		458572381F1DFE0600E016AF /* 幻灯片19.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片19.JPG"; sourceTree = "<group>"; };
+		458572391F1DFE0600E016AF /* 幻灯片2.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片2.JPG"; sourceTree = "<group>"; };
+		4585723A1F1DFE0600E016AF /* 幻灯片20.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片20.JPG"; sourceTree = "<group>"; };
+		4585723B1F1DFE0600E016AF /* 幻灯片21.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片21.JPG"; sourceTree = "<group>"; };
+		4585723C1F1DFE0600E016AF /* 幻灯片22.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片22.JPG"; sourceTree = "<group>"; };
+		4585723D1F1DFE0600E016AF /* 幻灯片23.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片23.JPG"; sourceTree = "<group>"; };
+		4585723E1F1DFE0600E016AF /* 幻灯片3.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片3.JPG"; sourceTree = "<group>"; };
+		4585723F1F1DFE0600E016AF /* 幻灯片4.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片4.JPG"; sourceTree = "<group>"; };
+		458572401F1DFE0600E016AF /* 幻灯片5.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片5.JPG"; sourceTree = "<group>"; };
+		458572411F1DFE0600E016AF /* 幻灯片6.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片6.JPG"; sourceTree = "<group>"; };
+		458572421F1DFE0600E016AF /* 幻灯片7.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片7.JPG"; sourceTree = "<group>"; };
+		458572431F1DFE0600E016AF /* 幻灯片8.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片8.JPG"; sourceTree = "<group>"; };
+		458572441F1DFE0600E016AF /* 幻灯片9.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "幻灯片9.JPG"; sourceTree = "<group>"; };
+		66A334417981B7F89D5BE5F6 /* libPods-EMAudioToVideo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EMAudioToVideo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		961A7BF6E87E60081EE7FB84 /* Pods-EMAudioToVideo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EMAudioToVideo.release.xcconfig"; path = "Pods/Target Support Files/Pods-EMAudioToVideo/Pods-EMAudioToVideo.release.xcconfig"; sourceTree = "<group>"; };
+		E7B745485D8D4DB67D0EAEC3 /* Pods-EMAudioToVideo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EMAudioToVideo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EMAudioToVideo/Pods-EMAudioToVideo.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		458571F71F1DDBB000E016AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D32AA1B4E7BEC11947742F34 /* libPods-EMAudioToVideo.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		458571F11F1DDBB000E016AF = {
+			isa = PBXGroup;
+			children = (
+				458571FC1F1DDBB000E016AF /* EMAudioToVideo */,
+				458571FB1F1DDBB000E016AF /* Products */,
+				8618C3E2CBC4F7AE38C25EF6 /* Pods */,
+				5C690CBD9A0ADEF7A16F48EB /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		458571FB1F1DDBB000E016AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				458571FA1F1DDBB000E016AF /* EMAudioToVideo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		458571FC1F1DDBB000E016AF /* EMAudioToVideo */ = {
+			isa = PBXGroup;
+			children = (
+				458572141F1DE06000E016AF /* BaseViewController.h */,
+				458572151F1DE06000E016AF /* BaseViewController.m */,
+				458572161F1DE06000E016AF /* DetailViewController.h */,
+				458572171F1DE06000E016AF /* DetailViewController.m */,
+				458572181F1DE06000E016AF /* EMBaseNavigationController.h */,
+				458572191F1DE06000E016AF /* EMBaseNavigationController.m */,
+				4585722A1F1DF48F00E016AF /* EMPlayCellView.h */,
+				4585722B1F1DF48F00E016AF /* EMPlayCellView.m */,
+				4585721A1F1DE06000E016AF /* EMStockPlayView.h */,
+				4585721B1F1DE06000E016AF /* EMStockPlayView.m */,
+				4585721D1F1DE06000E016AF /* ViewController.h */,
+				4585721E1F1DE06000E016AF /* ViewController.m */,
+				4585721F1F1DE06000E016AF /* WMLightView.h */,
+				458572201F1DE06000E016AF /* WMLightView.m */,
+				458572001F1DDBB000E016AF /* AppDelegate.h */,
+				458572011F1DDBB000E016AF /* AppDelegate.m */,
+				458572091F1DDBB000E016AF /* Assets.xcassets */,
+				4585720B1F1DDBB000E016AF /* LaunchScreen.storyboard */,
+				4585720E1F1DDBB000E016AF /* Info.plist */,
+				458571FD1F1DDBB000E016AF /* Supporting Files */,
+			);
+			path = EMAudioToVideo;
+			sourceTree = "<group>";
+		};
+		458571FD1F1DDBB000E016AF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4585722D1F1DFE0600E016AF /* ImageAndIcon */,
+				458572281F1DF1AA00E016AF /* WMPlayer.bundle */,
+				458571FE1F1DDBB000E016AF /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4585722D1F1DFE0600E016AF /* ImageAndIcon */ = {
+			isa = PBXGroup;
+			children = (
+				4585722E1F1DFE0600E016AF /* 幻灯片1.JPG */,
+				4585722F1F1DFE0600E016AF /* 幻灯片10.JPG */,
+				458572301F1DFE0600E016AF /* 幻灯片11.JPG */,
+				458572311F1DFE0600E016AF /* 幻灯片12.JPG */,
+				458572321F1DFE0600E016AF /* 幻灯片13.JPG */,
+				458572331F1DFE0600E016AF /* 幻灯片14.JPG */,
+				458572341F1DFE0600E016AF /* 幻灯片15.JPG */,
+				458572351F1DFE0600E016AF /* 幻灯片16.JPG */,
+				458572361F1DFE0600E016AF /* 幻灯片17.JPG */,
+				458572371F1DFE0600E016AF /* 幻灯片18.JPG */,
+				458572381F1DFE0600E016AF /* 幻灯片19.JPG */,
+				458572391F1DFE0600E016AF /* 幻灯片2.JPG */,
+				4585723A1F1DFE0600E016AF /* 幻灯片20.JPG */,
+				4585723B1F1DFE0600E016AF /* 幻灯片21.JPG */,
+				4585723C1F1DFE0600E016AF /* 幻灯片22.JPG */,
+				4585723D1F1DFE0600E016AF /* 幻灯片23.JPG */,
+				4585723E1F1DFE0600E016AF /* 幻灯片3.JPG */,
+				4585723F1F1DFE0600E016AF /* 幻灯片4.JPG */,
+				458572401F1DFE0600E016AF /* 幻灯片5.JPG */,
+				458572411F1DFE0600E016AF /* 幻灯片6.JPG */,
+				458572421F1DFE0600E016AF /* 幻灯片7.JPG */,
+				458572431F1DFE0600E016AF /* 幻灯片8.JPG */,
+				458572441F1DFE0600E016AF /* 幻灯片9.JPG */,
+			);
+			path = ImageAndIcon;
+			sourceTree = "<group>";
+		};
+		5C690CBD9A0ADEF7A16F48EB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				66A334417981B7F89D5BE5F6 /* libPods-EMAudioToVideo.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8618C3E2CBC4F7AE38C25EF6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E7B745485D8D4DB67D0EAEC3 /* Pods-EMAudioToVideo.debug.xcconfig */,
+				961A7BF6E87E60081EE7FB84 /* Pods-EMAudioToVideo.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		458571F91F1DDBB000E016AF /* EMAudioToVideo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 458572111F1DDBB000E016AF /* Build configuration list for PBXNativeTarget "EMAudioToVideo" */;
+			buildPhases = (
+				BAF7C524BEE49F3857EE003C /* [CP] Check Pods Manifest.lock */,
+				458571F61F1DDBB000E016AF /* Sources */,
+				458571F71F1DDBB000E016AF /* Frameworks */,
+				458571F81F1DDBB000E016AF /* Resources */,
+				FA8186277D9DF81E67979906 /* [CP] Embed Pods Frameworks */,
+				5CCF3C1843E4698AD1B83891 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EMAudioToVideo;
+			productName = EMAudioToVideo;
+			productReference = 458571FA1F1DDBB000E016AF /* EMAudioToVideo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		458571F21F1DDBB000E016AF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = "益盟技术部";
+				TargetAttributes = {
+					458571F91F1DDBB000E016AF = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = R4BB53JJAY;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 458571F51F1DDBB000E016AF /* Build configuration list for PBXProject "EMAudioToVideo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 458571F11F1DDBB000E016AF;
+			productRefGroup = 458571FB1F1DDBB000E016AF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				458571F91F1DDBB000E016AF /* EMAudioToVideo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		458571F81F1DDBB000E016AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				458572521F1DFE0600E016AF /* 幻灯片21.JPG in Resources */,
+				4585724E1F1DFE0600E016AF /* 幻灯片18.JPG in Resources */,
+				458572501F1DFE0600E016AF /* 幻灯片2.JPG in Resources */,
+				4585724F1F1DFE0600E016AF /* 幻灯片19.JPG in Resources */,
+				458572561F1DFE0600E016AF /* 幻灯片4.JPG in Resources */,
+				4585720D1F1DDBB000E016AF /* LaunchScreen.storyboard in Resources */,
+				458572481F1DFE0600E016AF /* 幻灯片12.JPG in Resources */,
+				458572591F1DFE0600E016AF /* 幻灯片7.JPG in Resources */,
+				4585724A1F1DFE0600E016AF /* 幻灯片14.JPG in Resources */,
+				458572451F1DFE0600E016AF /* 幻灯片1.JPG in Resources */,
+				458572291F1DF1AA00E016AF /* WMPlayer.bundle in Resources */,
+				4585724D1F1DFE0600E016AF /* 幻灯片17.JPG in Resources */,
+				4585720A1F1DDBB000E016AF /* Assets.xcassets in Resources */,
+				458572551F1DFE0600E016AF /* 幻灯片3.JPG in Resources */,
+				458572531F1DFE0600E016AF /* 幻灯片22.JPG in Resources */,
+				458572491F1DFE0600E016AF /* 幻灯片13.JPG in Resources */,
+				458572571F1DFE0600E016AF /* 幻灯片5.JPG in Resources */,
+				458572511F1DFE0600E016AF /* 幻灯片20.JPG in Resources */,
+				458572461F1DFE0600E016AF /* 幻灯片10.JPG in Resources */,
+				458572581F1DFE0600E016AF /* 幻灯片6.JPG in Resources */,
+				458572471F1DFE0600E016AF /* 幻灯片11.JPG in Resources */,
+				4585725B1F1DFE0600E016AF /* 幻灯片9.JPG in Resources */,
+				4585725A1F1DFE0600E016AF /* 幻灯片8.JPG in Resources */,
+				458572541F1DFE0600E016AF /* 幻灯片23.JPG in Resources */,
+				4585724C1F1DFE0600E016AF /* 幻灯片16.JPG in Resources */,
+				4585724B1F1DFE0600E016AF /* 幻灯片15.JPG in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5CCF3C1843E4698AD1B83891 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EMAudioToVideo/Pods-EMAudioToVideo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BAF7C524BEE49F3857EE003C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FA8186277D9DF81E67979906 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EMAudioToVideo/Pods-EMAudioToVideo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		458571F61F1DDBB000E016AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				458572261F1DE06000E016AF /* ViewController.m in Sources */,
+				4585722C1F1DF48F00E016AF /* EMPlayCellView.m in Sources */,
+				458572021F1DDBB000E016AF /* AppDelegate.m in Sources */,
+				458572241F1DE06000E016AF /* EMStockPlayView.m in Sources */,
+				458572231F1DE06000E016AF /* EMBaseNavigationController.m in Sources */,
+				458572211F1DE06000E016AF /* BaseViewController.m in Sources */,
+				458571FF1F1DDBB000E016AF /* main.m in Sources */,
+				458572221F1DE06000E016AF /* DetailViewController.m in Sources */,
+				458572271F1DE06000E016AF /* WMLightView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		4585720B1F1DDBB000E016AF /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4585720C1F1DDBB000E016AF /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4585720F1F1DDBB000E016AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		458572101F1DDBB000E016AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		458572121F1DDBB000E016AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E7B745485D8D4DB67D0EAEC3 /* Pods-EMAudioToVideo.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = R4BB53JJAY;
+				INFOPLIST_FILE = EMAudioToVideo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Emoney.EMAudioToVideo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		458572131F1DDBB000E016AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 961A7BF6E87E60081EE7FB84 /* Pods-EMAudioToVideo.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = R4BB53JJAY;
+				INFOPLIST_FILE = EMAudioToVideo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Emoney.EMAudioToVideo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		458571F51F1DDBB000E016AF /* Build configuration list for PBXProject "EMAudioToVideo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4585720F1F1DDBB000E016AF /* Debug */,
+				458572101F1DDBB000E016AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		458572111F1DDBB000E016AF /* Build configuration list for PBXNativeTarget "EMAudioToVideo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				458572121F1DDBB000E016AF /* Debug */,
+				458572131F1DDBB000E016AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 458571F21F1DDBB000E016AF /* Project object */;
+}

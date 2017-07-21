@@ -172,6 +172,8 @@
 }
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 @property (nonatomic, strong) NSArray *reponseArray;
+@property (nonatomic, strong) NSMutableDictionary *urlOperations;
+@property (nonatomic, strong) dispatch_queue_t barrierQueue;
 @end
 
 @implementation EMPlayResponManager

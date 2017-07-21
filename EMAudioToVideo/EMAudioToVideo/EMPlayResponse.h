@@ -7,11 +7,24 @@
 //
 
 #import <Foundation/Foundation.h>
+@class EMPlayResponse;
+@protocol EMPlayResponsedelegata  <NSObject>
+
+- (void)EMPlayResponse:(EMPlayResponse *)response progeress:(float )currentProgress;
+
+- (NSDictionary *)EMPlayResponseFinishAnalysisResponse:(EMPlayResponse *)response;
+
+
+@end
+
 
 @interface EMPlayResponse : NSObject
 - (id)initWithResponseData:(NSData *)data;
 - (void)readAlldata;
 - (NSString *)getResourcepath;
 - (NSDictionary *)getResourceDict;
+@end
 
+@interface EMPlayResponManager:NSObject
++ (instancetype _Nullable )sharedManager;
 @end

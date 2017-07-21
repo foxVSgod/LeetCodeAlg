@@ -11,6 +11,7 @@
 @import UIKit;
 
 @interface EMPlayResponse(){
+
 }
 @property (nonatomic, strong) NSData *response;
 @property (nonatomic, assign) NSInteger pointIndex;
@@ -164,5 +165,49 @@
         return [[NSData alloc] init];
     }
 }
+@end
+
+@interface EMPlayResponManager(){
+
+}
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
+@property (nonatomic, strong) NSArray *reponseArray;
+@end
+
+@implementation EMPlayResponManager
+
+- (instancetype) init{
+    self = [super init];
+    if (self) {
+        self.operationQueue = [[NSOperationQueue alloc] init];
+        self.operationQueue.maxConcurrentOperationCount = 1;
+
+
+
+    }
+    return self;
+}
+
+
++ (instancetype)sharedManager {
+    static EMPlayResponManager *_sharedManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedManager = [[self alloc] init];
+    });
+    return _sharedManager;
+}
+
+
+
+
+
+
 
 @end
+
+
+
+
+
+

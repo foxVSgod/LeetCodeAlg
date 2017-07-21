@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "EMBaseNavigationController.h"
 #import "DetailViewController.h"
+#import "EMNetWork.h"
 
 @interface AppDelegate ()
 
@@ -25,6 +26,8 @@
     self.window.backgroundColor = [UIColor clearColor];
     //设置背景颜色  将该UIWindow对象设为主窗口、并显示出来
     [self.window makeKeyAndVisible];
+    EMDownloadloader *downloader = [[EMDownloadloader alloc] init];
+    [downloader startdownData];
     return YES;
 }
 

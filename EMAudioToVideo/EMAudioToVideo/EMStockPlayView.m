@@ -23,7 +23,7 @@
 //整个屏幕代表的时间
 #define TotalScreenTime 90
 #define LeastDistance 15
-@interface EMStockPlayView()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource>{
+@interface EMStockPlayView()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,AVAudioPlayerDelegate>{
     //用来判断手势是否移动过
     BOOL _hasMoved;
     //记录触摸开始时的视频播放的时间
@@ -35,8 +35,13 @@
     //总时间
     CGFloat totalTime;
 }
+/**
+ *  播放器player
+ */
+@property (nonatomic, retain) AVAudioPlayer   *player;
+
 /** 是否初始化了播放器 */
-@property (nonatomic, assign) BOOL            isInitPlayer;
+@property (nonatomic, assign) BOOL      isInitPlayer;
 
 ///记录touch开始的点
 @property (nonatomic,assign)CGPoint touchBeginPoint;
@@ -47,8 +52,6 @@
 
 
 @property (nonatomic, strong)NSDateFormatter *dateFormatter;
-//监听播放起状态的监听者
-@property (nonatomic ,strong) id playbackTimeObserver;
 
 @property (nonatomic, strong ) UICollectionView  *playerview;
 @property (nonatomic, strong)  UICollectionViewFlowLayout *playLayout;
@@ -68,6 +71,10 @@
 @property (nonatomic, strong) UIProgressView *loadingProgress;
 
 @property (nonatomic, strong) NSString      *localfilePath;
+@property (nonatomic, strong) NSArray       *picArray;
+@property (nonatomic, strong) NSString      *stockInfo;
+@property (nonatomic, strong) NSTimer       *progressTime;
+@property (nonatomic, assign) NSTimeInterval  currentPlayTime;
 @end
 
 static void *PlayViewCMTimeValue = &PlayViewCMTimeValue;
@@ -92,7 +99,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
     }
     return self;
 }
-
 /**
  *  初始化WMPlayer的控件，添加手势，添加通知，添加kvo等
  */
@@ -190,7 +196,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
         make.height.mas_equalTo(50);
         make.bottom.equalTo(self.bottomView).with.offset(0);
         make.width.mas_equalTo(50);
-        
     }];
 
     self.playOrPauseBtn.selected = YES;//默认状态，即默认是不自动播放
@@ -199,9 +204,9 @@ static NSString *playCellIndentify = @"playCellIndentify";
     for (UIControl *view in volumeView.subviews) {
         if ([view.superclass isSubclassOfClass:[UISlider class]]) {
             self.volumeSlider = (UISlider *)view;
+            self.volumeSlider.value = 0.5;
         }
     }
-    
     //slider
     self.progressSlider = [[UISlider alloc]init];
     self.progressSlider.minimumValue = 0.0;
@@ -384,57 +389,35 @@ static NSString *playCellIndentify = @"playCellIndentify";
 }
 #pragma mark
 #pragma mark 进入后台
-- (void)appDidEnterBackground:(NSNotification*)note
-{
-//    if (self.playOrPauseBtn.isSelected==NO) {//如果是播放中，则继续播放
-//        NSArray *tracks = [self.currentItem tracks];
-//        for (AVPlayerItemTrack *playerItemTrack in tracks) {
-//            if ([playerItemTrack.assetTrack hasMediaCharacteristic:AVMediaCharacteristicVisual]) {
-//                playerItemTrack.enabled = YES;
-//            }
-//        }
-//        [self.player stop];
-//        NSLog(@"22222 %s WMPlayerStatePlaying",__FUNCTION__);
-//        
-//        self.state = WMPlayerStatePlaying;
-//    }else{
-//        NSLog(@"%s WMPlayerStateStopped",__FUNCTION__);
-//        self.state = WMPlayerStateStopped;
-//    }
+- (void)appDidEnterBackground:(NSNotification*)note{
+    if (self.playOrPauseBtn.isSelected==NO) {//如果是播放中，则继续播放
+        [self.player pause];
+        NSLog(@"22222 %s WMPlayerStatePlaying",__FUNCTION__);
+        self.state = WMPlayerStatePause;
+    }else{
+        NSLog(@"%s WMPlayerStateStopped",__FUNCTION__);
+        self.state = WMPlayerStateStopped;
+    }
 }
 #pragma mark
 #pragma mark 进入前台
-- (void)appWillEnterForeground:(NSNotification*)note
-{
-//    if (self.playOrPauseBtn.isSelected==NO) {//如果是播放中，则继续播放
-//        NSArray *tracks = [self.currentItem tracks];
-//        for (AVPlayerItemTrack *playerItemTrack in tracks) {
-//            if ([playerItemTrack.assetTrack hasMediaCharacteristic:AVMediaCharacteristicVisual]) {
-//                playerItemTrack.enabled = YES;
-//            }
-//        }
-//        self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
-//        self.playerLayer.frame = self.contentView.bounds;
-//        self.playerLayer.videoGravity = AVLayerVideoGravityResize;
-//        [self.contentView.layer insertSublayer:_playerLayer atIndex:0];
-//        [self.player play];
-//        self.state = WMPlayerStatePlaying;
-//        NSLog(@"3333333%s WMPlayerStatePlaying",__FUNCTION__);
-//        
-//    }else{
-//        NSLog(@"%s WMPlayerStateStopped",__FUNCTION__);
-//        
-//        self.state = WMPlayerStateStopped;
-//    }
+- (void)appWillEnterForeground:(NSNotification*)note{
+    if (self.playOrPauseBtn.isSelected==NO) {//如果是播放中，则继续播放
+        [self.player play];
+        self.state = WMPlayerStatePlaying;
+        NSLog(@"3333333%s WMPlayerStatePlaying",__FUNCTION__);
+    }else{
+        NSLog(@"%s WMPlayerStateStopped",__FUNCTION__);
+        self.state = WMPlayerStateStopped;
+    }
 }
 #pragma mark
 #pragma mark appwillResignActive
-- (void)appwillResignActive:(NSNotification *)note
-{
+- (void)appwillResignActive:(NSNotification *)note{
     NSLog(@"appwillResignActive");
 }
-- (void)appBecomeActive:(NSNotification *)note
-{
+
+- (void)appBecomeActive:(NSNotification *)note{
     NSLog(@"appBecomeActive");
 }
 //视频进度条的点击事件
@@ -442,7 +425,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
     CGPoint touchLocation = [sender locationInView:self.progressSlider];
     CGFloat value = (self.progressSlider.maximumValue - self.progressSlider.minimumValue) * (touchLocation.x/self.progressSlider.frame.size.width);
     [self.progressSlider setValue:value animated:YES];
-    [self.player setCurrentTime:self.currentItem.currentTime.timescale];
+    [self.player setCurrentTime:value];
     if (self.player.rate != 1.f) {
         if ([self currentTime] == [self duration])
             [self setCurrentTime:0.f];
@@ -450,7 +433,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
         [self.player play];
     }
 }
-
 
 #pragma mark
 #pragma mark - layoutSubviews
@@ -471,6 +453,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
         [self.delegate wmplayer:self clickedFullScreenButton:sender];
     }
 }
+
 #pragma mark
 #pragma mark - 关闭按钮点击func
 -(void)colseTheVideo:(UIButton *)sender{
@@ -478,6 +461,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
         [self.delegate wmplayer:self clickedCloseButton:sender];
     }
 }
+
 ///获取视频长度
 - (double)duration{
     if (self.player){
@@ -499,7 +483,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
 
 - (void)setCurrentTime:(double)time{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.player setCurrentTime:self.currentItem.currentTime.timescale];
+        [self.player setCurrentTime:self.currentPlayTime];
     });
 }
 #pragma mark
@@ -519,14 +503,13 @@ static NSString *playCellIndentify = @"playCellIndentify";
         [self.delegate wmplayer:self clickedPlayOrPauseButton:sender];
     }
 }
+
 ///播放
 -(void)play{
-    return;
     if (self.isInitPlayer == NO) {
         self.isInitPlayer = YES;
         [self creatWMPlayerAndReadyToPlay];
-        [self.player play];
-        self.playOrPauseBtn.selected = NO;
+        self.playOrPauseBtn.selected = YES;
     }else{
         if (self.state==WMPlayerStateStopped||self.state ==WMPlayerStatePause) {
             self.state = WMPlayerStatePlaying;
@@ -537,6 +520,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
         }
     }
 }
+
 ///暂停
 -(void)pause{
     if (self.state==WMPlayerStatePlaying) {
@@ -575,51 +559,13 @@ static NSString *playCellIndentify = @"playCellIndentify";
         [self.delegate wmplayer:self doubleTaped:doubleTap];
     }
     [self PlayOrPause:self.playOrPauseBtn];
-    
     [self showControlView];
 }
-/**
- *  重写playerItem的setter方法，处理自己的逻辑
- */
--(void)setCurrentItem:(AVPlayerItem *)playerItem{
-    if (_currentItem==playerItem) {
-        return;
-    }
-    if (_currentItem) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_currentItem];
-        [_currentItem removeObserver:self forKeyPath:@"status"];
-        [_currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-        [_currentItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
-        [_currentItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
-        [_currentItem removeObserver:self forKeyPath:@"duration"];
-        
-        _currentItem = nil;
-    }
-    _currentItem = playerItem;
-    if (_currentItem) {
-        [_currentItem addObserver:self
-                       forKeyPath:@"status"
-                          options:NSKeyValueObservingOptionNew
-                          context:PlayViewStatusObservationContext];
-        
-        [_currentItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:PlayViewStatusObservationContext];
-        // 缓冲区空了，需要等待数据
-        [_currentItem addObserver:self forKeyPath:@"playbackBufferEmpty" options: NSKeyValueObservingOptionNew context:PlayViewStatusObservationContext];
-        // 缓冲区有足够数据可以播放了
-        [_currentItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options: NSKeyValueObservingOptionNew context:PlayViewStatusObservationContext];
-        
-        [_currentItem addObserver:self forKeyPath:@"duration" options:NSKeyValueObservingOptionNew context:PlayViewStatusObservationContext];
 
-//        [self.player replaceCurrentItemWithPlayerItem:_currentItem];
-        // 添加视频播放结束通知
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(moviePlayDidEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:_currentItem];
-    }
-}
 /**
  *  重写placeholderImage的setter方法，处理自己的逻辑
  */
-- (void)setPlaceholderImage:(UIImage *)placeholderImage
-{
+- (void)setPlaceholderImage:(UIImage *)placeholderImage{
     _placeholderImage = placeholderImage;
     if (placeholderImage) {
         self.contentView.layer.contents = (id) self.placeholderImage.CGImage;
@@ -631,10 +577,20 @@ static NSString *playCellIndentify = @"playCellIndentify";
 
 -(void)creatWMPlayerAndReadyToPlay{
     //设置player的参数
-    self.currentItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.URLString]];
-    self.player = [[AVAudioPlayer alloc] init];
-//    [self.player prepareToPlay];
-    self.state = WMPlayerStateBuffering;
+    if (!self.localfilePath) {
+        self.localfilePath =  [[NSBundle mainBundle] pathForResource:@"voice" ofType:@"wav"];
+    }
+
+    NSError *createAvPlayer = nil;
+    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:self.localfilePath] error:&createAvPlayer];
+
+    self.player.delegate = self;
+    self.player.volume = self.volumeSlider.value;
+    self.player.numberOfLoops = 0;
+    self->totalTime = self.player.duration;
+    self.currentPlayTime = 0;
+    [self initTimer];
+    self.state = WMPlayerStateStopped;
 }
 /**
  *  重写URLString的setter方法，处理自己的逻辑，
@@ -644,15 +600,12 @@ static NSString *playCellIndentify = @"playCellIndentify";
         return;
     }
     _URLString = URLString;
-    
     if (self.isInitPlayer) {
         self.state = WMPlayerStateBuffering;
     }else{
         self.state = WMPlayerStateStopped;
-        //here
         [self.loadingView stopAnimating];
     }
-    
     if (!self.placeholderImage) {//开发者可以在此处设置背景图片
         UIImage *image = WMPlayerImage(@"");
         self.contentView.layer.contents = (id) image.CGImage;
@@ -683,8 +636,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
  *  设置播放的状态
  *  @param state WMPlayerState
  */
-- (void)setState:(WMPlayerState)state
-{
+- (void)setState:(WMPlayerState)state{
     _state = state;
     // 控制菊花显示、隐藏
     if (state == WMPlayerStateBuffering) {
@@ -706,7 +658,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
  *  通过颜色来生成一个纯色图片
  */
 - (UIImage *)buttonImageFromColor:(UIColor *)color{
-    
     CGRect rect = self.bounds;
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -718,20 +669,13 @@ static NSString *playCellIndentify = @"playCellIndentify";
 
 #pragma mark
 #pragma mark--播放完成
-- (void)moviePlayDidEnd:(NSNotification *)notification {
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag{
+    self.progressSlider.value = 0;
     if (self.delegate&&[self.delegate respondsToSelector:@selector(wmplayerFinishedPlay:)]) {
         [self.delegate wmplayerFinishedPlay:self];
     }
-//    [self.player seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^(BOOL finished) {
-//        if (finished) {
-//            [self showControlView];
-//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                self.state = WMPlayerStateFinished;
-//                self.playOrPauseBtn.selected = YES;
-//            });
-//        }
-//    }];
 }
+
 ///显示操作栏view
 -(void)showControlView{
     [UIView animateWithDuration:0.5 animations:^{
@@ -741,7 +685,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
             [self.delegate wmplayer:self isHiddenTopAndBottomView:NO];
         }
     } completion:^(BOOL finish){
-        
+
     }];
 }
 ///隐藏操作栏view
@@ -765,144 +709,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
 #pragma mark - 播放进度
 - (void)updateProgress:(UISlider *)slider{
     self.isDragingSlider = NO;
-    [self.player setCurrentTime:_currentItem.currentTime.timescale];
-}
-#pragma mark
-#pragma mark KVO
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-    /* AVPlayerItem "status" property value observer. */
-    
-    if (context == PlayViewStatusObservationContext)
-    {
-        if ([keyPath isEqualToString:@"status"]) {
-            AVPlayerStatus status = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
-            switch (status)
-            {
-                    /* Indicates that the status of the player is not yet known because
-                     it has not tried to load new media resources for playback */
-                case AVPlayerStatusUnknown:
-                {
-                    [self.loadingProgress setProgress:0.0 animated:NO];
-                    NSLog(@"%s WMPlayerStateBuffering",__FUNCTION__);
-                    
-                    self.state = WMPlayerStateBuffering;
-                    [self.loadingView startAnimating];
-                }
-                    break;
-                    
-                case AVPlayerStatusReadyToPlay:
-                {
-                    self.state = WMPlayerStatePlaying;
-                    
-                    /* Once the AVPlayerItem becomes ready to play, i.e.
-                     [playerItem status] == AVPlayerItemStatusReadyToPlay,
-                     its duration can be fetched from the item. */
-                    //                    if (CMTimeGetSeconds(_currentItem.duration)) {
-                    //
-                    //                        totalTime = CMTimeGetSeconds(_currentItem.duration);
-                    //                        if (!isnan(totalTime)) {
-                    //                            self.progressSlider.maximumValue = totalTime;
-                    //                            NSLog(@"totalTime = %f",totalTime);
-                    //
-                    //                        }
-                    //                    }
-                    //监听播放状态
-                    [self initTimer];
-                    
-                    
-                    //5s dismiss bottomView
-                    if (self.autoDismissTimer==nil) {
-                        self.autoDismissTimer = [NSTimer timerWithTimeInterval:5.0 target:self selector:@selector(autoDismissBottomView:) userInfo:nil repeats:YES];
-                        [[NSRunLoop currentRunLoop] addTimer:self.autoDismissTimer forMode:NSDefaultRunLoopMode];
-                    }
-                    
-                    if (self.delegate&&[self.delegate respondsToSelector:@selector(wmplayerReadyToPlay:WMPlayerStatus:)]) {
-                        [self.delegate wmplayerReadyToPlay:self WMPlayerStatus:WMPlayerStatePlaying];
-                    }
-                    //here
-                    
-                    [self.loadingView stopAnimating];
-                    // 跳到xx秒播放视频
-                    if (self.seekTime) {
-                        [self seekToTimeToPlay:self.seekTime];
-                    }
-                    
-                }
-                    break;
-                    
-                case AVPlayerStatusFailed:
-                {
-                    self.state = WMPlayerStateFailed;
-                    NSLog(@"%s WMPlayerStateFailed",__FUNCTION__);
-                    
-                    if (self.delegate&&[self.delegate respondsToSelector:@selector(wmplayerFailedPlay:WMPlayerStatus:)]) {
-                        [self.delegate wmplayerFailedPlay:self WMPlayerStatus:WMPlayerStateFailed];
-                    }
-//                    NSError *error = [self.player.currentItem error];
-//                    if (error) {
-//                        self.loadFailedLabel.hidden = NO;
-//                        [self bringSubviewToFront:self.loadFailedLabel];
-//                        //here
-//                        [self.loadingView stopAnimating];
-//                    }
-//                    NSLog(@"视频加载失败===%@",error.description);
-                }
-                    break;
-            }
-            
-        }else if ([keyPath isEqualToString:@"duration"]) {
-            if ((CGFloat)CMTimeGetSeconds(_currentItem.duration) != totalTime) {
-                totalTime = (CGFloat)CMTimeGetSeconds(_currentItem.duration);
-                self.progressSlider.maximumValue = totalTime;
-                self.state = WMPlayerStatePlaying;
-            }
-        }
-        else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
-            
-            // 计算缓冲进度
-            NSTimeInterval timeInterval = [self availableDuration];
-            CMTime duration             = self.currentItem.duration;
-            CGFloat totalDuration       = CMTimeGetSeconds(duration);
-            //缓冲颜色
-            self.loadingProgress.progressTintColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.7];
-            [self.loadingProgress setProgress:timeInterval / totalDuration animated:NO];
-            
-            
-        } else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
-            [self.loadingView startAnimating];
-            // 当缓冲是空的时候
-            if (self.currentItem.playbackBufferEmpty) {
-                self.state = WMPlayerStateBuffering;
-                NSLog(@"%s WMPlayerStateBuffering",__FUNCTION__);
-                
-                [self loadedTimeRanges];
-            }
-            
-        } else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
-            //here
-            [self.loadingView stopAnimating];
-            // 当缓冲好的时候
-            if (self.currentItem.playbackLikelyToKeepUp && self.state == WMPlayerStateBuffering){
-                NSLog(@"55555%s WMPlayerStatePlaying",__FUNCTION__);
-                
-                self.state = WMPlayerStatePlaying;
-            }
-            
-        }
-    }
-    
-}
-/**
- *  缓冲回调
- */
-- (void)loadedTimeRanges
-{
-    self.state = WMPlayerStateBuffering;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self play];
-        //here
-        [self.loadingView stopAnimating];
-    });
+    [self.player setCurrentTime:self.player.currentTime];
 }
 
 #pragma mark
@@ -917,29 +724,26 @@ static NSString *playCellIndentify = @"playCellIndentify";
 #pragma  mark - 定时器
 -(void)initTimer{
     double interval = .1f;
-    CMTime playerDuration = [self playerItemDuration];
-    if (CMTIME_IS_INVALID(playerDuration))
-    {
+    double playerDuration = [self.player duration];
+    if (playerDuration <= 0){
         return;
     }
-    long long nowTime = _currentItem.currentTime.value/_currentItem.currentTime.timescale;
+    long long nowTime = self.player.currentTime;
     CGFloat width = CGRectGetWidth([self.progressSlider bounds]);
     interval = 0.5f * nowTime / width;
-    __weak typeof(self) weakSelf = self;
-//    self.playbackTimeObserver =  [weakSelf.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1.0, NSEC_PER_SEC)  queue:dispatch_get_main_queue() /* If you pass NULL, the main queue is used. */
-//                                                                          usingBlock:^(CMTime time){
-//                                                                              [weakSelf syncScrubber];
-//                                                                          }];
+    // 增加定时器 刷新 播放进度
+    self.progressTime = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(syncScrubber) userInfo:nil repeats:YES];
 }
+
 - (void)syncScrubber{
-    CMTime playerDuration = [self playerItemDuration];
-    if (CMTIME_IS_INVALID(playerDuration)){
+     double playerDuration = self.player.duration;
+    if (playerDuration <= 0){
         self.progressSlider.minimumValue = 0.0;
         return;
     }
     float minValue = [self.progressSlider minimumValue];
     float maxValue = [self.progressSlider maximumValue];
-    long long nowTime = _currentItem.currentTime.value/_currentItem.currentTime.timescale;
+    long long nowTime = self.player.currentTime;
     self.leftTimeLabel.text = [self convertTime:nowTime];
     self.rightTimeLabel.text = [self convertTime:totalTime];
     if (self.isDragingSlider==YES) {//拖拽slider中，不更新slider的值
@@ -964,20 +768,12 @@ static NSString *playCellIndentify = @"playCellIndentify";
         //currentItem.asset.duration.timescale计算的时候严重堵塞主线程，慎用
         /* A timescale of 1 means you can only specify whole seconds to seek to. The timescale is the number of parts per second. Use 600 for video, as Apple recommends, since it is a product of the common video frame rates like 50, 60, 25 and 24 frames per second*/
         [self.player setCurrentTime:time];
-//        [self.player seekToTime:CMTimeMakeWithSeconds(time, _currentItem.currentTime.timescale) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^(BOOL finished) {
-//            
-//        }];
-//        
+        if (![self.player isPlaying]){
+            [self.player play];
+        }
+    }
+}
 
-    }
-}
-- (CMTime)playerItemDuration{
-    AVPlayerItem *playerItem = _currentItem;
-    if (playerItem.status == AVPlayerItemStatusReadyToPlay){
-        return([playerItem duration]);
-    }
-    return(kCMTimeInvalid);
-}
 - (NSString *)convertTime:(float)second{
     NSDate *d = [NSDate dateWithTimeIntervalSince1970:second];
     if (second/3600 >= 1) {
@@ -987,19 +783,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
     }
     return [[self dateFormatter] stringFromDate:d];
 }
-/**
- *  计算缓冲进度
- *
- *  @return 缓冲进度
- */
-- (NSTimeInterval)availableDuration {
-    NSArray *loadedTimeRanges = [_currentItem loadedTimeRanges];
-    CMTimeRange timeRange     = [loadedTimeRanges.firstObject CMTimeRangeValue];// 获取缓冲区域
-    float startSeconds        = CMTimeGetSeconds(timeRange.start);
-    float durationSeconds     = CMTimeGetSeconds(timeRange.duration);
-    NSTimeInterval result     = startSeconds + durationSeconds;// 计算缓冲总进度
-    return result;
-}
 
 - (NSDateFormatter *)dateFormatter {
     if (!_dateFormatter) {
@@ -1008,6 +791,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
     }
     return _dateFormatter;
 }
+
 #pragma mark
 #pragma mark - touches
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -1021,7 +805,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
         return;
     }
     [super touchesBegan:touches withEvent:event];
-    
     //触摸开始, 初始化一些值
     _hasMoved = NO;
     _touchBeginValue = self.progressSlider.value;
@@ -1042,8 +825,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
         return;
     }
     [super touchesMoved:touches withEvent:event];
-    
-    
+
     //如果移动的距离过于小, 就判断为没有移动
     CGPoint tempPoint = [touches.anyObject locationInView:self];
     if (fabs(tempPoint.x - _touchBeginPoint.x) < LeastDistance && fabs(tempPoint.y - _touchBeginPoint.y) < LeastDistance) {
@@ -1068,8 +850,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
         _controlType = noneControl;
         return;
     }
-    
-    
+
     if (_controlType == progressControl) {     //如果是进度手势
         if (self.enableFastForwardGesture) {
             float value = [self moveProgressControllWithTempPoint:tempPoint];
@@ -1090,6 +871,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
                 }else{
                     _volumeSlider.value = voiceValue;
                 }
+                self.player.volume = _volumeSlider.value;
             }
         }else{
             return;
@@ -1114,13 +896,10 @@ static NSString *playCellIndentify = @"playCellIndentify";
         }
     }
 }
+
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesCancelled:touches withEvent:event];
-    //    if (iOS8) {
-    //        self.effectView.alpha = 0.0;
-    //    }
-    //判断是否移动过,
     if (_hasMoved) {
         if (_controlType == progressControl) { //进度控制就跳到响应的进度
             CGPoint tempPoint = [touches.anyObject locationInView:self];
@@ -1134,11 +913,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
             [self hideTheLightViewWithHidden:YES];
         }
     }else{
-        //        if (self.topView.hidden) {
-        //            [self controlViewOutHidden];
-        //        }else{
-        //            [self controlViewHidden];
-        //        }
+
     }
 }
 
@@ -1160,15 +935,9 @@ static NSString *playCellIndentify = @"playCellIndentify";
             [self hideTheLightViewWithHidden:YES];
         }
     }else{
-        //        if (self.topView.hidden) {
-        //            [self controlViewOutHidden];
-        //        }else{
-        //            [self controlViewHidden];
-        //        }
     }
-    
-    
 }
+
 #pragma mark - 用来控制移动过程中计算手指划过的时间
 -(float)moveProgressControllWithTempPoint:(CGPoint)tempPoint{
     //90代表整个屏幕代表的时间
@@ -1188,17 +957,17 @@ static NSString *playCellIndentify = @"playCellIndentify";
     [self.progressSlider setValue:value animated:YES];
 }
 
-//NSString * calculateTimeWithTimeFormatter(long long timeSecond){
-//    NSString * theLastTime = nil;
-//    if (timeSecond < 60) {
-//        theLastTime = [NSString stringWithFormat:@"00:%.2lld", timeSecond];
-//    }else if(timeSecond >= 60 && timeSecond < 3600){
-//        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld", timeSecond/60, timeSecond%60];
-//    }else if(timeSecond >= 3600){
-//        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld:%.2lld", timeSecond/3600, timeSecond%3600/60, timeSecond%60];
-//    }
-//    return theLastTime;
-//}
+NSString * calculateTimeWithTimeFormatter(long long timeSecond){
+    NSString * theLastTime = nil;
+    if (timeSecond < 60) {
+        theLastTime = [NSString stringWithFormat:@"00:%.2lld", timeSecond];
+    }else if(timeSecond >= 60 && timeSecond < 3600){
+        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld", timeSecond/60, timeSecond%60];
+    }else if(timeSecond >= 3600){
+        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld:%.2lld", timeSecond/3600, timeSecond%3600/60, timeSecond%60];
+    }
+    return theLastTime;
+}
 
 
 #pragma mark -
@@ -1228,20 +997,18 @@ static NSString *playCellIndentify = @"playCellIndentify";
 
 //重置播放器
 -(void )resetWMPlayer{
-    self.currentItem = nil;
     self.seekTime = 0;
     // 移除通知
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // 关闭定时器
     [self.autoDismissTimer invalidate];
     self.autoDismissTimer = nil;
+    [self.progressTime invalidate];
     // 暂停
     [self.player pause];
-    // 移除原来的layer
-    // 替换PlayerItem为nil
-    // 把player置为nil
     self.player = nil;
 }
+
 -(void)dealloc{
     for (UIView *aLightView in [UIApplication sharedApplication].keyWindow.subviews) {
         if ([aLightView isKindOfClass:[WMLightView class]]) {
@@ -1250,26 +1017,21 @@ static NSString *playCellIndentify = @"playCellIndentify";
     }
     NSLog(@"WMPlayer dealloc");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
+    [self.player removeObserver:self forKeyPath:@"status"];
+    [self.player removeObserver:self forKeyPath:@"duration"];
     //移除观察者
-    [_currentItem removeObserver:self forKeyPath:@"status"];
-    [_currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-    [_currentItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
-    [_currentItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
-    [_currentItem removeObserver:self forKeyPath:@"duration"];
-    
-    _currentItem = nil;
-    
-    
-    
-    
     [self.effectView removeFromSuperview];
     self.effectView = nil;
-//    [self.playerLayer removeFromSuperlayer];
-//    [self.player replaceCurrentItemWithPlayerItem:nil];
     self.player = nil;
     self.playOrPauseBtn = nil;
     self.autoDismissTimer = nil;
+}
+
+//重置数据
+- (void)setNewDataView:(EMPlayDataModel *)dataModel{
+    self.localfilePath = dataModel.voicepath;
+    self.stockInfo = dataModel.titleVlaue;
+    self.picArray = [NSArray arrayWithArray:dataModel.picstrarray];
 }
 
 //获取当前的旋转状态
@@ -1286,6 +1048,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
     }
     return CGAffineTransformIdentity;
 }
+
 - (NSString *)version{
     return @"3.0.0";
 }

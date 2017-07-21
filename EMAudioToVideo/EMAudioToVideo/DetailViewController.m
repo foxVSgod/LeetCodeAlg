@@ -304,31 +304,31 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
     self.listlayout.minimumInteritemSpacing = 1;
     self.listlayout.itemSize = CGSizeMake( 208, 117);
     //测试代码
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"测试" message:@"关闭播放器" preferredStyle:UIAlertControllerStyleAlert];
-        [alertVC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
-        }]];
-        [alertVC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            if (self.presentingViewController) {
-                [self dismissViewControllerAnimated:YES completion:^{
-                }];
-            }else{
-                if (stockPlayer.isFullscreen) {//由于是push出来的，所以如果在全屏状态下，先转为非全屏（也就是人像模式Portrait）
-                    [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
-                    [self toOrientation:UIInterfaceOrientationPortrait];
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [self.navigationController popViewControllerAnimated:YES];
-                    });
-
-                }else{
-                    [self.navigationController popViewControllerAnimated:YES];
-                }
-            }
-        }]];
-        [self presentViewController:alertVC animated:YES completion:^{
-        }];
-    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"测试" message:@"关闭播放器" preferredStyle:UIAlertControllerStyleAlert];
+//        [alertVC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//            
+//        }]];
+//        [alertVC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            if (self.presentingViewController) {
+//                [self dismissViewControllerAnimated:YES completion:^{
+//                }];
+//            }else{
+//                if (stockPlayer.isFullscreen) {//由于是push出来的，所以如果在全屏状态下，先转为非全屏（也就是人像模式Portrait）
+//                    [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
+//                    [self toOrientation:UIInterfaceOrientationPortrait];
+//                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                        [self.navigationController popViewControllerAnimated:YES];
+//                    });
+//
+//                }else{
+//                    [self.navigationController popViewControllerAnimated:YES];
+//                }
+//            }
+//        }]];
+//        [self presentViewController:alertVC animated:YES completion:^{
+//        }];
+//    });
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{

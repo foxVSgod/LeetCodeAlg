@@ -6,10 +6,10 @@
 //  Copyright © 2017年 rongrong you. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 @import MediaPlayer;
 @import AVFoundation;
 @import UIKit;
+#import "EMPlayDataModel.h"
 // 播放器的几种状态
 typedef NS_ENUM(NSInteger, WMPlayerState) {
     WMPlayerStateFailed,        // 播放失败
@@ -58,13 +58,6 @@ typedef NS_ENUM(NSUInteger,WMControlType) {
 @end
 
 @interface EMStockPlayView : UIView
-/**
- *  播放器player
- */
-@property (nonatomic,retain ) AVAudioPlayer       *player;
-/**
- *playerLayer,可以修改frame
- */
 
 /** 播放器的代理 */
 @property (nonatomic, weak)id <EMStockPlayerDelegate> delegate;
@@ -131,10 +124,8 @@ typedef NS_ENUM(NSUInteger,WMControlType) {
  *  wmPlayer内部一个UIView，所有的控件统一管理在此view中
  */
 @property (nonatomic,strong) UIView        *contentView;
-/**
- *  当前播放的item
- */
-@property (nonatomic, retain) AVPlayerItem   *currentItem;
+
+
 /**
  *  菊花（加载框）
  */
@@ -153,8 +144,6 @@ typedef NS_ENUM(NSUInteger,WMControlType) {
 /** 播放前占位图片，不设置就显示默认占位图（需要在设置视频URL之前设置） */
 @property (nonatomic, copy  ) UIImage              *placeholderImage ;
 
-
-
 ///---------------------------------------------------
 
 
@@ -171,7 +160,9 @@ typedef NS_ENUM(NSUInteger,WMControlType) {
 /**
  *  获取正在播放的时间点
  *
- 
+ */
+
+
  /**
  *  获取正在播放的时间点
  *
@@ -187,6 +178,10 @@ typedef NS_ENUM(NSUInteger,WMControlType) {
  * 版本号
  */
 - (NSString *)version;
+/**
+ * 设置播发的数据
+ */
+- (void)setNewDataView:(EMPlayDataModel *)dataModel;
 //获取当前的旋转状态
 +(CGAffineTransform)getCurrentDeviceOrientation;
 

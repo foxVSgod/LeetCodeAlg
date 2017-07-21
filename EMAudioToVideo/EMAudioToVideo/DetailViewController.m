@@ -10,6 +10,7 @@
 #import "EMStockPlayView.h"
 #import "Masonry.h"
 #import "EMPlayCellView.h"
+#import "EMPlayResponse.h"
 
 @interface DetailViewController ()<EMStockPlayerDelegate,UICollectionViewDelegate,UICollectionViewDataSource>{
     EMStockPlayView  *stockPlayer;
@@ -21,6 +22,8 @@
 @property (nonatomic, strong) UIView *headView;
 @property (nonatomic, strong) UILabel *titleLb;
 @property (nonatomic, strong) UILabel *tilleTimelb;
+@property (nonatomic, strong) EMPlayResponse *stockresource;
+@property (nonatomic, strong) NSDictionary *resourceDict;
 @end
 
 static NSString *DetailCellIndentify = @"DetailCellIndentify";
@@ -82,11 +85,9 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
         [self releaseWMPlayer];
         if (self.presentingViewController) {
             [self dismissViewControllerAnimated:YES completion:^{
-                
             }];
         }else{
             [self.navigationController popViewControllerAnimated:YES];
-
         }
     }
 }
@@ -329,6 +330,10 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 //        [self presentViewController:alertVC animated:YES completion:^{
 //        }];
 //    });
+//    self.stockresource = [[EMPlayResponse alloc] init];
+//    [self.stockresource readAlldata];
+//    self.resourceDict = [NSDictionary dictionaryWithDictionary:[self.stockresource getResourceDict]];
+//    [self.listCollectView reloadData];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -336,13 +341,17 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    if (self.resourceDict ) {
+        return  self.resourceDict.allKeys.count;
+    }
     return  22;
 }
 
 - ( UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     EMPlayCellView *tempcell = [collectionView dequeueReusableCellWithReuseIdentifier:DetailCellIndentify forIndexPath:indexPath];
     if (tempcell) {
-        [tempcell setImageUrl:[NSString stringWithFormat:@"幻灯片%ld.JPG",indexPath.row + 1]];
+        NSString *imagePath =[NSString stringWithFormat:@"%@stock%ld.png", [self.stockresource getResourcepath],indexPath.row + 1];
+        [tempcell setImageUrl:imagePath];
     }
     return tempcell;
 }

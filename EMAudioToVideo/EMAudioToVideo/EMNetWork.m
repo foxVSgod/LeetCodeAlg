@@ -12,7 +12,6 @@
     NSUUID *receoptID;
 }
 @property (nonatomic, strong) NSURLSessionDownloadTask *downTask;
-@property (nonatomic, strong) NSString *urlpath;
 @property (nonatomic, assign) double progerss;
 @property (nonatomic, strong) NSData *downloaddata;
 @property (nonatomic, strong) NSURLSession *session;
@@ -41,7 +40,6 @@
     if (self.urlpath) {
         return;
     }
-    self.urlpath = @"http://222.66.234.242:8081/researchvideo/2017/lishaohua/54c6f131-0cb5-4e20-9ce5-00062206e2a1_sc.rar";
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURL *downUrl = [NSURL URLWithString:self.urlpath];
 

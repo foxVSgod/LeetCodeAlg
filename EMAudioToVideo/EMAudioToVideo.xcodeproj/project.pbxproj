@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45024C6D1F21F1D100534B83 /* testrespon.dat in Resources */ = {isa = PBXBuildFile; fileRef = 45024C6C1F21E9BC00534B83 /* testrespon.dat */; };
 		45476A3C1F204B4200D9EE23 /* EMPlayResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 45476A3B1F204B4200D9EE23 /* EMPlayResponse.m */; };
 		458027EF1F1EECF80063F34B /* EMPlayDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 458027EE1F1EECF80063F34B /* EMPlayDataModel.m */; };
 		458027F11F1F2A800063F34B /* voice.wav in Resources */ = {isa = PBXBuildFile; fileRef = 458027F01F1F2A800063F34B /* voice.wav */; };
@@ -19,7 +20,6 @@
 		458572221F1DE06000E016AF /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572171F1DE06000E016AF /* DetailViewController.m */; };
 		458572231F1DE06000E016AF /* EMBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572191F1DE06000E016AF /* EMBaseNavigationController.m */; };
 		458572241F1DE06000E016AF /* EMStockPlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4585721B1F1DE06000E016AF /* EMStockPlayView.m */; };
-		458572261F1DE06000E016AF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4585721E1F1DE06000E016AF /* ViewController.m */; };
 		458572271F1DE06000E016AF /* WMLightView.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572201F1DE06000E016AF /* WMLightView.m */; };
 		458572291F1DF1AA00E016AF /* WMPlayer.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 458572281F1DF1AA00E016AF /* WMPlayer.bundle */; };
 		4585722C1F1DF48F00E016AF /* EMPlayCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4585722B1F1DF48F00E016AF /* EMPlayCellView.m */; };
@@ -50,6 +50,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		45024C6C1F21E9BC00534B83 /* testrespon.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = testrespon.dat; sourceTree = "<group>"; };
 		45476A3A1F204B4200D9EE23 /* EMPlayResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayResponse.h; sourceTree = "<group>"; };
 		45476A3B1F204B4200D9EE23 /* EMPlayResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMPlayResponse.m; sourceTree = "<group>"; };
 		458027ED1F1EECF80063F34B /* EMPlayDataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayDataModel.h; sourceTree = "<group>"; };
@@ -72,8 +73,6 @@
 		458572191F1DE06000E016AF /* EMBaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMBaseNavigationController.m; sourceTree = "<group>"; };
 		4585721A1F1DE06000E016AF /* EMStockPlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMStockPlayView.h; sourceTree = "<group>"; };
 		4585721B1F1DE06000E016AF /* EMStockPlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMStockPlayView.m; sourceTree = "<group>"; };
-		4585721D1F1DE06000E016AF /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		4585721E1F1DE06000E016AF /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		4585721F1F1DE06000E016AF /* WMLightView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMLightView.h; sourceTree = "<group>"; };
 		458572201F1DE06000E016AF /* WMLightView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMLightView.m; sourceTree = "<group>"; };
 		458572281F1DF1AA00E016AF /* WMPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WMPlayer.bundle; sourceTree = "<group>"; };
@@ -156,8 +155,6 @@
 				458027F31F1F5DC70063F34B /* EMNetWork.m */,
 				45476A3A1F204B4200D9EE23 /* EMPlayResponse.h */,
 				45476A3B1F204B4200D9EE23 /* EMPlayResponse.m */,
-				4585721D1F1DE06000E016AF /* ViewController.h */,
-				4585721E1F1DE06000E016AF /* ViewController.m */,
 				4585721F1F1DE06000E016AF /* WMLightView.h */,
 				458572201F1DE06000E016AF /* WMLightView.m */,
 				458572001F1DDBB000E016AF /* AppDelegate.h */,
@@ -174,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				458027F01F1F2A800063F34B /* voice.wav */,
+				45024C6C1F21E9BC00534B83 /* testrespon.dat */,
 				4585722D1F1DFE0600E016AF /* ImageAndIcon */,
 				458572281F1DF1AA00E016AF /* WMPlayer.bundle */,
 				458571FE1F1DDBB000E016AF /* main.m */,
@@ -310,6 +308,7 @@
 				458572571F1DFE0600E016AF /* 幻灯片5.JPG in Resources */,
 				458572511F1DFE0600E016AF /* 幻灯片20.JPG in Resources */,
 				458572461F1DFE0600E016AF /* 幻灯片10.JPG in Resources */,
+				45024C6D1F21F1D100534B83 /* testrespon.dat in Resources */,
 				458572581F1DFE0600E016AF /* 幻灯片6.JPG in Resources */,
 				458572471F1DFE0600E016AF /* 幻灯片11.JPG in Resources */,
 				4585725B1F1DFE0600E016AF /* 幻灯片9.JPG in Resources */,
@@ -375,7 +374,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				458572261F1DE06000E016AF /* ViewController.m in Sources */,
 				4585722C1F1DF48F00E016AF /* EMPlayCellView.m in Sources */,
 				458572021F1DDBB000E016AF /* AppDelegate.m in Sources */,
 				458572241F1DE06000E016AF /* EMStockPlayView.m in Sources */,

@@ -75,6 +75,7 @@
 @property (nonatomic, strong) NSString      *stockInfo;
 @property (nonatomic, strong) NSTimer       *progressTime;
 @property (nonatomic, assign) NSTimeInterval  currentPlayTime;
+@property (nonatomic, strong) NSArray       *timeArray;
 @end
 
 static void *PlayViewCMTimeValue = &PlayViewCMTimeValue;
@@ -377,12 +378,10 @@ static NSString *playCellIndentify = @"playCellIndentify";
         _loadFailedLabel.text = @"视频加载失败";
         _loadFailedLabel.hidden = YES;
         [self.contentView addSubview:_loadFailedLabel];
-        
         [_loadFailedLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.center.equalTo(self.contentView);
             make.width.equalTo(self.contentView);
             make.height.equalTo(@30);
-            
         }];
     }
     return _loadFailedLabel;
@@ -561,7 +560,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
     [self PlayOrPause:self.playOrPauseBtn];
     [self showControlView];
 }
-
 /**
  *  重写placeholderImage的setter方法，处理自己的逻辑
  */

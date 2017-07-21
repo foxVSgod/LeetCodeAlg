@@ -10,7 +10,7 @@
 
 @interface EMDownloadloader : NSObject
 @property (nonatomic, strong, nullable) id  downdataCache;
-@property (nonatomic, strong, nullable) NSURL *baseUrl;
+@property (nonatomic, strong, nullable) NSString *urlpath;
 @property (nonatomic, strong, nullable) NSString *localfilePath;
 - (void)startdownData;
 - (void)continueAction;

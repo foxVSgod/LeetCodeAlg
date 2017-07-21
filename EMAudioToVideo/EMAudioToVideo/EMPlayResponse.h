@@ -10,4 +10,8 @@
 
 @interface EMPlayResponse : NSObject
 - (id)initWithResponseData:(NSData *)data;
+- (void)readAlldata;
+- (NSString *)getResourcepath;
+- (NSDictionary *)getResourceDict;
+
 @end

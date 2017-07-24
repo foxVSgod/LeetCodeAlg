@@ -7,24 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-@class EMPlayResponse;
-@protocol EMPlayResponsedelegata  <NSObject>
 
-- (void)EMPlayResponse:(EMPlayResponse *)response progeress:(float )currentProgress;
-
-- (NSDictionary *)EMPlayResponseFinishAnalysisResponse:(EMPlayResponse *)response;
-
-
-@end
-
+typedef void(^EMAudioAnalysisCompletedBlock)( NSString *_Nullable audioFilepath,NSArray *_Nullable imagepathArray, NSDictionary *_Nullable timeDict,NSError * _Nullable error, BOOL finished);
 
 @interface EMPlayResponse : NSObject
-- (id)initWithResponseData:(NSData *)data;
-- (void)readAlldata;
-- (NSString *)getResourcepath;
-- (NSDictionary *)getResourceDict;
+- (id _Nullable )initWithResponseFilepath:(NSURL*_Nullable)locationUrl NS_DESIGNATED_INITIALIZER;
+- (void)setAnalysisCompleteBlock:(EMAudioAnalysisCompletedBlock _Nullable )finishedBlock;
+- (BOOL)AnalyzeAlldata;
+- (NSString *_Nullable)getfilebasepath;
 @end
 
-@interface EMPlayResponManager:NSObject
-+ (instancetype _Nullable )sharedManager;
-@end

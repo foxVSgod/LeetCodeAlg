@@ -10,12 +10,14 @@
 @import Foundation;
 @import UIKit;
 
+#define ImageNamePrefix   @"EMStockImageName"
 @interface EMPlayResponse(){
 
 }
-@property (nonatomic, strong) NSData *response;
+@property (nonatomic, strong) NSURL *dataFilepath;
+@property (nonatomic, strong) NSData *reponseData;
 @property (nonatomic, assign) NSInteger pointIndex;
-@property (nonatomic, strong) NSArray *picArray;
+@property (nonatomic, strong) NSArray  *picArray;
 @property (nonatomic, strong) NSString *filepath;
 @property (nonatomic, assign) NSInteger version;
 @property (nonatomic, assign) NSInteger objectCount;
@@ -23,33 +25,23 @@
 @property (nonatomic, strong) NSMutableDictionary *playtimeDic;
 @property (nonatomic, strong) NSString *imageBaseUrl;
 
-- (void) readAlldata;
-
 - (int8_t)readUnit8Bit;
-
 - (int16_t)readUnit16Bit;
-
 - (int32_t)readUnit32Bit;
-
 - (int64_t)readUnit64Bit;
-
 - (NSData *)readdataBylength:(NSInteger )datalength;
 @end
 
 @implementation EMPlayResponse
 
-- (id)initWithResponseData:(NSData *)data{
-    self = [super init];
-    if (self) {
-        self.response = [[NSData alloc] initWithData:data];
-        self.pointIndex = 0;
-    }
-    return self;
+- (id)init{
+   return  [self initWithResponseFilepath:nil];
 }
 
-- (id)init{
+- (id)initWithResponseFilepath:(NSURL*)locationUrl{
     self = [super init];
     if (self) {
+        self.dataFilepath = [locationUrl copy];
         self.pointIndex = 0;
     }
     return self;
@@ -68,6 +60,10 @@
     }
 }
 
+- (NSString *)getfilebasepath{
+    return [self getResourcepath];
+}
+
 - (NSDictionary *)getResourceDict{
     if (self.playtimeDic) {
         return [NSDictionary dictionaryWithDictionary:self.playtimeDic];
@@ -76,9 +72,9 @@
     }
 }
 
-- (void)readAlldata{
+- (BOOL)AnalyzeAlldata{
     NSData *responsedata = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"testrespon" ofType:@"dat"]];
-    self.response =[[NSData alloc] initWithData:responsedata];
+    self.reponseData =[[NSData alloc] initWithData:responsedata];
     self.version = [self readUnit32Bit];
     self.objectCount = [self readUnit32Bit];
     self.imageCount = 0;
@@ -88,12 +84,12 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:self.imageBaseUrl]) {
           [[NSFileManager defaultManager] createDirectoryAtPath:[path_sandox stringByAppendingString:@"StockResource"] withIntermediateDirectories:YES attributes:nil error:nil];
     }
-
-    while (self.pointIndex <= self.response.length) {
+    BOOL objectIndex = 0;
+    while (self.pointIndex <= self.reponseData.length) {
         short filetype = [self readUnit8Bit];
         if (filetype == 1) {
             NSInteger filelength = [self readUnit64Bit];
-            if (filelength + self.pointIndex <= self.response.length) {
+            if (filelength + self.pointIndex <= self.reponseData.length) {
                 NSData *wavdata = [self readdataBylength:filelength];
                 if (wavdata) {
                     NSString *wavePath = [ self.imageBaseUrl stringByAppendingString:@"stockAudio.wav"];
@@ -102,20 +98,28 @@
             }
         }else if (filetype ==2){
             NSInteger piclength = [self readUnit64Bit];
-            if (piclength + self.pointIndex <= self.response.length) {
+            if (piclength + self.pointIndex <= self.reponseData.length) {
                 NSData *wavdata = [self readdataBylength:piclength -4];
                 NSInteger playtime = [self readUnit32Bit];
                 if (wavdata) {
                     self.imageCount = self.imageCount + 1;
                     UIImage *tempImage = [UIImage imageWithData:wavdata];
-                    NSString *imageNamestr =[NSString stringWithFormat:@"stock%ld.png",self.imageCount];
+                    NSString *imageNamestr =[NSString stringWithFormat:@"%@-%ld.png",ImageNamePrefix,self.imageCount];
                     NSString *imagePath = [self.imageBaseUrl stringByAppendingString:[NSString stringWithFormat:@"%@",imageNamestr]];
                     [UIImagePNGRepresentation(tempImage) writeToFile:imagePath atomically:YES];
                     [_playtimeDic setObject:[NSNumber numberWithInteger:playtime] forKey:imageNamestr];
                 }
             }
         }
+        objectIndex = objectIndex + 1;
     }
+     NSInteger chechNum = [self readUnit32Bit];
+    if (chechNum == self.version) {
+        return YES;
+    }else{
+        return false;
+    }
+
 }
 
 - (NSData *)getCurrentReadData:(NSData *)data size:(NSUInteger)currentReadDataLength;
@@ -124,41 +128,41 @@
         {
         return nil;
         }
-    NSData *currentReadData = [self.response subdataWithRange:NSMakeRange(self.pointIndex, currentReadDataLength)];
+    NSData *currentReadData = [self.reponseData subdataWithRange:NSMakeRange(self.pointIndex, currentReadDataLength)];
     self.pointIndex += currentReadDataLength;
     return currentReadData;
 }
 
 - (int8_t)readUnit8Bit{
-    NSData *currentReadData = [self getCurrentReadData:self.response size:sizeof(int8_t)];
+    NSData *currentReadData = [self getCurrentReadData:self.reponseData size:sizeof(int8_t)];
     int8_t result;  //short
     [currentReadData getBytes: &result length: sizeof(result)];
     return result;
 }
 
 - (int16_t)readUnit16Bit{
-    NSData *currentReadData = [self getCurrentReadData:self.response size:sizeof(int16_t)];
+    NSData *currentReadData = [self getCurrentReadData:self.reponseData size:sizeof(int16_t)];
     int16_t result;  //short
     [currentReadData getBytes: &result length: sizeof(result)];
     return result;
 }
 
 - (int32_t)readUnit32Bit{
-    NSData *currentReadData = [self getCurrentReadData:self.response size:sizeof(int32_t)];
+    NSData *currentReadData = [self getCurrentReadData:self.reponseData size:sizeof(int32_t)];
     int32_t result;  //short
     [currentReadData getBytes: &result length: sizeof(result)];
     return result;
 }
 
 - (int64_t)readUnit64Bit{
-    NSData *currentReadData = [self getCurrentReadData:self.response size:sizeof(int64_t)];
+    NSData *currentReadData = [self getCurrentReadData:self.reponseData size:sizeof(int64_t)];
     int64_t result;  //short
     [currentReadData getBytes: &result length: sizeof(result)];
     return result;
 }
 
 - (NSData *)readdataBylength:(NSInteger )datalength{
-    NSData *curentReadData = [self getCurrentReadData:self.response size:datalength];
+    NSData *curentReadData = [self getCurrentReadData:self.reponseData size:datalength];
     if (curentReadData) {
         return curentReadData;
     }else{
@@ -166,50 +170,4 @@
     }
 }
 @end
-
-@interface EMPlayResponManager(){
-
-}
-@property (nonatomic, strong) NSOperationQueue *operationQueue;
-@property (nonatomic, strong) NSArray *reponseArray;
-@property (nonatomic, strong) NSMutableDictionary *urlOperations;
-@property (nonatomic, strong) dispatch_queue_t barrierQueue;
-@end
-
-@implementation EMPlayResponManager
-
-- (instancetype) init{
-    self = [super init];
-    if (self) {
-        self.operationQueue = [[NSOperationQueue alloc] init];
-        self.operationQueue.maxConcurrentOperationCount = 1;
-
-
-
-    }
-    return self;
-}
-
-
-+ (instancetype)sharedManager {
-    static EMPlayResponManager *_sharedManager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sharedManager = [[self alloc] init];
-    });
-    return _sharedManager;
-}
-
-
-
-
-
-
-
-@end
-
-
-
-
-
 

@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "EMBaseNavigationController.h"
 #import "DetailViewController.h"
-#import "EMNetWork.h"
 #import "EMPlayResponse.h"
 
 @interface AppDelegate ()

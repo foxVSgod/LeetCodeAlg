@@ -9,9 +9,10 @@
 /* Begin PBXBuildFile section */
 		45024C6D1F21F1D100534B83 /* testrespon.dat in Resources */ = {isa = PBXBuildFile; fileRef = 45024C6C1F21E9BC00534B83 /* testrespon.dat */; };
 		45476A3C1F204B4200D9EE23 /* EMPlayResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 45476A3B1F204B4200D9EE23 /* EMPlayResponse.m */; };
+		45762E421F25DC1A00D623EE /* EMPlayDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 45762E411F25DC1A00D623EE /* EMPlayDownloader.m */; };
+		45762E451F25DE6100D623EE /* EMDownloaderoperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 45762E441F25DE6100D623EE /* EMDownloaderoperation.m */; };
 		458027EF1F1EECF80063F34B /* EMPlayDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 458027EE1F1EECF80063F34B /* EMPlayDataModel.m */; };
 		458027F11F1F2A800063F34B /* voice.wav in Resources */ = {isa = PBXBuildFile; fileRef = 458027F01F1F2A800063F34B /* voice.wav */; };
-		458027F41F1F5DC70063F34B /* EMNetWork.m in Sources */ = {isa = PBXBuildFile; fileRef = 458027F31F1F5DC70063F34B /* EMNetWork.m */; };
 		458571FF1F1DDBB000E016AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 458571FE1F1DDBB000E016AF /* main.m */; };
 		458572021F1DDBB000E016AF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 458572011F1DDBB000E016AF /* AppDelegate.m */; };
 		4585720A1F1DDBB000E016AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 458572091F1DDBB000E016AF /* Assets.xcassets */; };
@@ -53,11 +54,13 @@
 		45024C6C1F21E9BC00534B83 /* testrespon.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = testrespon.dat; sourceTree = "<group>"; };
 		45476A3A1F204B4200D9EE23 /* EMPlayResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayResponse.h; sourceTree = "<group>"; };
 		45476A3B1F204B4200D9EE23 /* EMPlayResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMPlayResponse.m; sourceTree = "<group>"; };
+		45762E401F25DC1A00D623EE /* EMPlayDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayDownloader.h; sourceTree = "<group>"; };
+		45762E411F25DC1A00D623EE /* EMPlayDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMPlayDownloader.m; sourceTree = "<group>"; };
+		45762E431F25DE6100D623EE /* EMDownloaderoperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMDownloaderoperation.h; sourceTree = "<group>"; };
+		45762E441F25DE6100D623EE /* EMDownloaderoperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMDownloaderoperation.m; sourceTree = "<group>"; };
 		458027ED1F1EECF80063F34B /* EMPlayDataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayDataModel.h; sourceTree = "<group>"; };
 		458027EE1F1EECF80063F34B /* EMPlayDataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMPlayDataModel.m; sourceTree = "<group>"; };
 		458027F01F1F2A800063F34B /* voice.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = voice.wav; sourceTree = "<group>"; };
-		458027F21F1F5DC70063F34B /* EMNetWork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMNetWork.h; sourceTree = "<group>"; };
-		458027F31F1F5DC70063F34B /* EMNetWork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMNetWork.m; sourceTree = "<group>"; };
 		458571FA1F1DDBB000E016AF /* EMAudioToVideo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EMAudioToVideo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		458571FE1F1DDBB000E016AF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		458572001F1DDBB000E016AF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -151,8 +154,10 @@
 				458027EE1F1EECF80063F34B /* EMPlayDataModel.m */,
 				4585721A1F1DE06000E016AF /* EMStockPlayView.h */,
 				4585721B1F1DE06000E016AF /* EMStockPlayView.m */,
-				458027F21F1F5DC70063F34B /* EMNetWork.h */,
-				458027F31F1F5DC70063F34B /* EMNetWork.m */,
+				45762E431F25DE6100D623EE /* EMDownloaderoperation.h */,
+				45762E441F25DE6100D623EE /* EMDownloaderoperation.m */,
+				45762E401F25DC1A00D623EE /* EMPlayDownloader.h */,
+				45762E411F25DC1A00D623EE /* EMPlayDownloader.m */,
 				45476A3A1F204B4200D9EE23 /* EMPlayResponse.h */,
 				45476A3B1F204B4200D9EE23 /* EMPlayResponse.m */,
 				4585721F1F1DE06000E016AF /* WMLightView.h */,
@@ -374,6 +379,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45762E421F25DC1A00D623EE /* EMPlayDownloader.m in Sources */,
 				4585722C1F1DF48F00E016AF /* EMPlayCellView.m in Sources */,
 				458572021F1DDBB000E016AF /* AppDelegate.m in Sources */,
 				458572241F1DE06000E016AF /* EMStockPlayView.m in Sources */,
@@ -381,8 +387,8 @@
 				458572211F1DE06000E016AF /* BaseViewController.m in Sources */,
 				45476A3C1F204B4200D9EE23 /* EMPlayResponse.m in Sources */,
 				458571FF1F1DDBB000E016AF /* main.m in Sources */,
+				45762E451F25DE6100D623EE /* EMDownloaderoperation.m in Sources */,
 				458027EF1F1EECF80063F34B /* EMPlayDataModel.m in Sources */,
-				458027F41F1F5DC70063F34B /* EMNetWork.m in Sources */,
 				458572221F1DE06000E016AF /* DetailViewController.m in Sources */,
 				458572271F1DE06000E016AF /* WMLightView.m in Sources */,
 			);

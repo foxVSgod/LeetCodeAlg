@@ -11,6 +11,7 @@
 #import "Masonry.h"
 #import "EMPlayCellView.h"
 #import "EMPlayResponse.h"
+#import "EMPlayDownloader.h"
 
 @interface DetailViewController ()<EMStockPlayerDelegate,UICollectionViewDelegate,UICollectionViewDataSource>{
     EMStockPlayView  *stockPlayer;
@@ -334,6 +335,12 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 //    [self.stockresource readAlldata];
 //    self.resourceDict = [NSDictionary dictionaryWithDictionary:[self.stockresource getResourceDict]];
 //    [self.listCollectView reloadData];
+//    [EMPlayDownloader sharedDownloader] downloadImageWithURL:(nullable NSURL *) options:(EMAudioDownloaderOperations) CompletedBlock:^(NSString * _Nullable filePath, NSError * _Nullable error, BOOL finished) {
+//    } Analyze:^(NSString * _Nullable audioFilepath, NSArray * _Nullable imagepathArray, NSError * _Nullable error, BOOL finished) {
+//
+//    }
+
+
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{

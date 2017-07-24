@@ -54,7 +54,6 @@ static NSString *const kCompletedCallbackKey = @"completed";
 }
 
 - (void)dealloc{
-    self.analysisobjct.delegate = nil;
     //SDDispatchQueueRelease(_barrierQueue);
 }
 
@@ -168,7 +167,6 @@ static NSString *const kCompletedCallbackKey = @"completed";
         self.backgroundTaskId = UIBackgroundTaskInvalid;
     }
 }
-
 
 //- (void)startdownData{
 //    if (self.urlpath) {

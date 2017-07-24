@@ -18,12 +18,14 @@
 @property (nonatomic, strong) NSData *reponseData;
 @property (nonatomic, assign) NSInteger pointIndex;
 @property (nonatomic, strong) NSArray  *picArray;
-@property (nonatomic, strong) NSString *filepath;
+@property (nonatomic, strong) NSString *audiofilepath;
 @property (nonatomic, assign) NSInteger version;
 @property (nonatomic, assign) NSInteger objectCount;
 @property (nonatomic, assign) NSInteger imageCount;
 @property (nonatomic, strong) NSMutableDictionary *playtimeDic;
+@property (nonatomic, strong) NSMutableArray *pictPathArray;
 @property (nonatomic, strong) NSString *imageBaseUrl;
+@property (nonatomic, copy) EMAudioAnalysisCompletedBlock completeBlock;
 
 - (int8_t)readUnit8Bit;
 - (int16_t)readUnit16Bit;
@@ -42,6 +44,7 @@
     self = [super init];
     if (self) {
         self.dataFilepath = [locationUrl copy];
+        self.pictPathArray = [NSMutableArray array];
         self.pointIndex = 0;
     }
     return self;
@@ -72,6 +75,10 @@
     }
 }
 
+- (void)setAnalysisCompleteBlock:(EMAudioAnalysisCompletedBlock)finishedBlock{
+    self.completeBlock = [finishedBlock copy];
+}
+
 - (BOOL)AnalyzeAlldata{
     NSData *responsedata = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"testrespon" ofType:@"dat"]];
     self.reponseData =[[NSData alloc] initWithData:responsedata];
@@ -92,8 +99,8 @@
             if (filelength + self.pointIndex <= self.reponseData.length) {
                 NSData *wavdata = [self readdataBylength:filelength];
                 if (wavdata) {
-                    NSString *wavePath = [ self.imageBaseUrl stringByAppendingString:@"stockAudio.wav"];
-                    [wavdata writeToFile:wavePath atomically:YES];
+                    self.audiofilepath = [ self.imageBaseUrl stringByAppendingString:@"stockAudio.wav"];
+                    [wavdata writeToFile: self.audiofilepath atomically:YES];
                 }
             }
         }else if (filetype ==2){
@@ -108,18 +115,22 @@
                     NSString *imagePath = [self.imageBaseUrl stringByAppendingString:[NSString stringWithFormat:@"%@",imageNamestr]];
                     [UIImagePNGRepresentation(tempImage) writeToFile:imagePath atomically:YES];
                     [_playtimeDic setObject:[NSNumber numberWithInteger:playtime] forKey:imageNamestr];
+                    [self.pictPathArray addObject:imageNamestr];
                 }
             }
         }
         objectIndex = objectIndex + 1;
     }
      NSInteger chechNum = [self readUnit32Bit];
-    if (chechNum == self.version) {
-        return YES;
-    }else{
-        return false;
+    BOOL success = chechNum == self.version;
+    NSError *error = nil;
+    if (!success) {
+//        error = [NSError alloc] initWithDomain:<#(nonnull NSErrorDomain)#> code:<#(NSInteger)#> userInfo:<#(nullable NSDictionary *)#>
     }
-
+    if (self.completeBlock) {
+        self.completeBlock( self.audiofilepath , self.pictPathArray, self.playtimeDic, error, success);
+    }
+    return success;
 }
 
 - (NSData *)getCurrentReadData:(NSData *)data size:(NSUInteger)currentReadDataLength;

@@ -357,7 +357,7 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 - ( UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     EMPlayCellView *tempcell = [collectionView dequeueReusableCellWithReuseIdentifier:DetailCellIndentify forIndexPath:indexPath];
     if (tempcell) {
-        NSString *imagePath =[NSString stringWithFormat:@"%@stock%ld.png", [self.stockresource getResourcepath],indexPath.row + 1];
+        NSString *imagePath =[NSString stringWithFormat:@"%@stock%ld.png", [self.stockresource getfilebasepath],indexPath.row + 1];
         [tempcell setImageUrl:imagePath];
     }
     return tempcell;

@@ -17,19 +17,21 @@ typedef NS_OPTIONS(NSUInteger, EMAudioDownloaderOperations){
     EMAudioDownloaderContinueInBackground = 1 <<3,
     EMAudioDownloaderHighPriority = 1 <<4
 };
+typedef void(^EMAudioDownloaderProgressBlock)(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL);
+typedef void(^EMAudioDownloaderCompletedBlock)( NSString * _Nullable filePath, NSError * _Nullable error, BOOL finished);
 typedef void(^EMAudioDownloaderCompletedBlock)( NSString * _Nullable filePath, NSError * _Nullable error, BOOL finished);
 
-@interface EMDownloaderoperation : NSOperation<NSURLSessionDownloadDelegate,NSURLSessionTaskDelegate>
+@interface EMDownloaderoperation : NSOperation <NSURLSessionDownloadDelegate,NSURLSessionDelegate>
 @property (nonatomic, strong, nullable) NSURLRequest *request;
 @property (nonatomic, strong, readonly,nullable) NSURLSessionDownloadTask *downTask;
 @property (nonatomic, strong, nullable) NSURLResponse *response;
-@property (nonatomic, strong, nullable) NSString *localfilePath;
 @property (nonatomic, assign, readonly) EMAudioDownloaderOperations options;
-- (nonnull instancetype ) initWithRequest:(NSURLRequest *_Nullable)reqest UrlSession:(NSURLSession *_Nullable)sesstion downloaderoptions:(EMAudioDownloaderOperations)operations NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype )initWithRequest:(NSURLRequest *_Nullable)reqest stockInfor:(NSString *_Nullable)stockCode UrlSession:(NSURLSession *_Nullable)sesstion downloaderoptions:(EMAudioDownloaderOperations)operations NS_DESIGNATED_INITIALIZER;
 
-- (nonnull id)addhandlesCompletedBlock:(nullable EMAudioDownloaderCompletedBlock)completedBlcok Analyze:(nullable EMAudioAnalysisCompletedBlock)analysisBlock;
+- (nonnull id)addProgressBlock:(EMAudioDownloaderProgressBlock _Nullable )progressBlcok handlesCompletedBlock:(nullable EMAudioDownloaderCompletedBlock)completedBlcok Analyze:(nullable EMAudioAnalysisCompletedBlock)analysisBlock;
 
 - (BOOL)cancle:(nonnull id)token;
++ (NSString *_Nullable)resourceZipRouthPath;
 //- (void)startdownData;
 //- (void)continueAction;
 //- (void)pauseDownload;

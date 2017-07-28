@@ -12,12 +12,16 @@
 #import "EMPlayCellView.h"
 #import "EMPlayResponse.h"
 #import "EMPlayDownloader.h"
+#import "EMStockInfoModel.h"
+#import "ASCRootClassEntity.h"
+#import "ASCDataEntity.h"
+#import <MBProgressHUD.h>
 
 @interface DetailViewController ()<EMStockPlayerDelegate,UICollectionViewDelegate,UICollectionViewDataSource>{
-    EMStockPlayView  *stockPlayer;
     CGRect     playerFrame;
     BOOL isHiddenStatusBar;//记录状态的隐藏显示
 }
+@property (nonatomic, strong)  EMStockPlayView  *stockPlayer;
 @property (nonatomic, strong) UICollectionView *listCollectView;
 @property (nonatomic, strong) UICollectionViewFlowLayout *listlayout;
 @property (nonatomic, strong) UIView *headView;
@@ -25,6 +29,9 @@
 @property (nonatomic, strong) UILabel *tilleTimelb;
 @property (nonatomic, strong) EMPlayResponse *stockresource;
 @property (nonatomic, strong) NSDictionary *resourceDict;
+@property (nonatomic, strong) NSArray<EMStockInfoModel *> *pictlist;
+@property (nonatomic, strong) NSString *stockCodeValue;
+@property (nonatomic, strong) MBProgressHUD *progressHud;
 @end
 
 static NSString *DetailCellIndentify = @"DetailCellIndentify";
@@ -41,6 +48,13 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
     }
     return NO;
 }
+- (id)initWithStocKCode:(NSString *)code{
+    self = [self init];
+    if (self) {
+        self.stockCodeValue = code;
+    }
+    return self;
+}
 //视图控制器实现的方法
 - (BOOL)shouldAutorotate{
     //是否允许转屏
@@ -55,13 +69,13 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation{
     //对于present出来的控制器，要主动的更新一个约束，让wmPlayer全屏，更安全
-    if (stockPlayer.isFullscreen==NO) {
-        [stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
+    if (_stockPlayer.isFullscreen==NO) {
+        [_stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.equalTo(@([UIScreen mainScreen].bounds.size.height));
             make.height.equalTo(@([UIScreen mainScreen].bounds.size.width));
-            make.center.equalTo(stockPlayer.superview);
+            make.center.equalTo(_stockPlayer.superview);
         }];
-        stockPlayer.isFullscreen = YES;
+        _stockPlayer.isFullscreen = YES;
         self.enablePanGesture = NO;
     }
     return UIInterfaceOrientationLandscapeRight;
@@ -74,13 +88,13 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
         //刷新
         [UIViewController attemptRotationToDeviceOrientation];
         
-        [stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [_stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view).with.offset(0);
             make.left.equalTo(self.view).with.offset(0);
             make.right.equalTo(self.view).with.offset(0);
             make.height.equalTo(@(playerFrame.size.height));
         }];
-        stockPlayer.isFullscreen = NO;
+        _stockPlayer.isFullscreen = NO;
         self.enablePanGesture = YES;
     }else{
         [self releaseWMPlayer];
@@ -99,17 +113,17 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 
 ///全屏按钮
 -(void)wmplayer:(EMStockPlayView *)stockplayer clickedFullScreenButton:(UIButton *)fullScreenBtn{
-    if (stockPlayer.isFullscreen==YES) {//全屏
+    if (_stockPlayer.isFullscreen==YES) {//全屏
         //强制翻转屏幕，Home键在下边。
         [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
         
-        stockPlayer.isFullscreen = NO;
+        _stockPlayer.isFullscreen = NO;
         self.enablePanGesture = YES;
 
         }else{//非全屏
             [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationLandscapeRight) forKey:@"orientation"];
             [self toOrientation:UIInterfaceOrientationLandscapeRight];
-            stockPlayer.isFullscreen = YES;
+            _stockPlayer.isFullscreen = YES;
             self.enablePanGesture = NO;
     }
 }
@@ -126,22 +140,26 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 -(void)wmplayerFailedPlay:(EMStockPlayView *)stockplayer WMPlayerStatus:(WMPlayerState)state{
     NSLog(@"wmplayerDidFailedPlay");
 }
+
 -(void)wmplayerReadyToPlay:(EMStockPlayView *)stockplayer WMPlayerStatus:(WMPlayerState)state{
 //    NSLog(@"wmplayerDidReadyToPlay");
 }
+
 -(void)wmplayerFinishedPlay:(EMStockPlayView *)stockplayer{
     NSLog(@"wmplayerDidFinishedPlay");
 }
+
 //操作栏隐藏或者显示都会调用此方法
 -(void)wmplayer:(EMStockPlayView *)stockplayer isHiddenTopAndBottomView:(BOOL)isHidden{
     isHiddenStatusBar = isHidden;
     [self setNeedsStatusBarAppearanceUpdate];
 }
+
 /**
  *  旋转屏幕通知
  */
 - (void)onDeviceOrientationChange:(NSNotification *)notification{
-    if (stockPlayer==nil||stockPlayer.superview==nil){
+    if (_stockPlayer==nil||_stockPlayer.superview==nil){
         return;
     }
 
@@ -150,30 +168,28 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
     switch (interfaceOrientation) {
         case UIInterfaceOrientationPortraitUpsideDown:{
             NSLog(@"第3个旋转方向---电池栏在下");
-            stockPlayer.isFullscreen = NO;
+            _stockPlayer.isFullscreen = NO;
             self.enablePanGesture = NO;
         }
             break;
         case UIInterfaceOrientationPortrait:{
             NSLog(@"第0个旋转方向---电池栏在上");
             [self toOrientation:UIInterfaceOrientationPortrait];
-            stockPlayer.isFullscreen = NO;
+            _stockPlayer.isFullscreen = NO;
             self.enablePanGesture = YES;
-
         }
             break;
         case UIInterfaceOrientationLandscapeLeft:{
             NSLog(@"第2个旋转方向---电池栏在左");
             [self toOrientation:UIInterfaceOrientationLandscapeLeft];
-                stockPlayer.isFullscreen = YES;
+                _stockPlayer.isFullscreen = YES;
             self.enablePanGesture = NO;
-
         }
             break;
         case UIInterfaceOrientationLandscapeRight:{
             NSLog(@"第1个旋转方向---电池栏在右");
             [self toOrientation:UIInterfaceOrientationLandscapeRight];
-            stockPlayer.isFullscreen = YES;
+            _stockPlayer.isFullscreen = YES;
             self.enablePanGesture = NO;
         }
             break;
@@ -185,17 +201,17 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 //点击进入,退出全屏,或者监测到屏幕旋转去调用的方法
 -(void)toOrientation:(UIInterfaceOrientation)orientation{
     if (orientation ==UIInterfaceOrientationPortrait) {//
-        [stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [_stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.headView.mas_bottom).with.offset(-1);
             make.left.equalTo(self.view).with.offset(0);
             make.right.equalTo(self.view).with.offset(0);
             make.height.equalTo(@(playerFrame.size.height));
         }];
     }else{
-        [stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [_stockPlayer mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.equalTo(@([UIScreen mainScreen].bounds.size.width));
             make.height.equalTo(@([UIScreen mainScreen].bounds.size.height));
-            make.center.equalTo(stockPlayer.superview);
+            make.center.equalTo(_stockPlayer.superview);
         }];
     }
 }
@@ -215,6 +231,74 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 -(void)viewDidDisappear:(BOOL)animated{
     self.navigationController.navigationBarHidden = NO;
     [super viewDidAppear:animated];
+}
+
+- (void)requsetStockInfo{
+    if (self.stockCodeValue.length < 6) {
+        self.stockCodeValue = @"600546";
+    }
+    NSString *strURL = [NSString stringWithFormat:@"http://180.153.25.174:40010/url?appName=app2&key=key2&stock=%@",self.stockCodeValue];
+    NSURL *tempurl = [NSURL URLWithString:strURL];
+    //创建一个请求NSURLSession.h
+    NSURLRequest *request = [NSURLRequest requestWithURL:tempurl];
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    self.progressHud = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:self.progressHud];
+    self.progressHud.label.text = @"下载中";
+    self.progressHud.mode = MBProgressHUDModeAnnularDeterminate;
+    [self.progressHud showAnimated:YES];
+    __weak typeof(self) weakself =self;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+    ASCRootClassEntity *statusInfoModel = [[ASCRootClassEntity alloc] initWithDic:dict];
+    if (statusInfoModel) {
+        NSDictionary *datadic = [dict objectForKey:@"data"];
+        weakself.pictlist = [NSArray arrayWithArray:statusInfoModel.data.tag_data];
+        if (statusInfoModel.code.integerValue == 0) {
+            if (statusInfoModel.data.bag_address) {
+                NSURL *requseturl = [NSURL URLWithString:statusInfoModel.data.bag_address];
+                [[EMPlayDownloader sharedDownloader] downloadImageWithURL:requseturl stockInfo:self.stockCodeValue options:  EMAudioDownloaderUseNSURLCache ProgressBlock:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                          [weakself.progressHud setProgress:receivedSize * 1.00 / expectedSize];
+                    });
+                    NSLog(@"数据下载进度%.2f",receivedSize * 1.00 / expectedSize);
+                } CompletedBlock:^(NSString * _Nullable filePath, NSError * _Nullable error, BOOL finished) {
+                    if (filePath) {
+                        NSLog(@"下载成功");
+                        weakself.progressHud.label.text = @"下载完成,解析中";
+                    }
+                } Analyze:^(NSString * _Nullable audioFilepath, NSArray * _Nullable imagepathArray, NSDictionary * _Nullable timeDict, NSError * _Nullable error, BOOL finished) {
+                    if(audioFilepath){
+                        NSLog(@"音频录音目录%@",audioFilepath);
+                    }
+                    if(audioFilepath){
+                        NSLog(@"图片路径%@",imagepathArray[0]);
+                    }
+                    if (timeDict.count > 0) {
+                        NSLog(@"图片路径%@",imagepathArray[0]);
+                    }
+                    [weakself.progressHud removeFromSuperview];
+                    weakself.resourceDict = [NSDictionary dictionaryWithDictionary:timeDict];
+                    [weakself.listCollectView reloadData];
+                    if (weakself.pictlist.count >0) {
+                        EMStockInfoModel *tempModel = [self.pictlist objectAtIndex:0];
+                        weakself.titleLb.text = tempModel.tag;
+                    }
+                    EMPlayDataModel *tempPlayDataModel = [[EMPlayDataModel alloc] init];
+                    tempPlayDataModel.stockCode = self.stockCodeValue;
+                    tempPlayDataModel.picstrarray = [NSArray arrayWithArray:imagepathArray];
+                    tempPlayDataModel.voicepath = audioFilepath;
+                    tempPlayDataModel.timeDict = [NSDictionary dictionaryWithDictionary:timeDict];
+                    [weakself.stockPlayer setNewDataView:tempPlayDataModel];
+                    
+                }];
+            }
+
+        }else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"消息提示" message:[datadic objectForKey:@"error_info"]delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil,nil];
+            alert.tag = 0;
+            [alert show];
+        }
+    }
 }
 
 - (void)createHeadVeies{
@@ -238,7 +322,6 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
         make.left.equalTo(self.headView).with.offset(5);
         make.right.equalTo(self.headView).with.offset(0);
         make.height.equalTo(@(30));
-
     }];
 
     self.tilleTimelb = [[UILabel alloc] init];
@@ -266,17 +349,18 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 
     [self createHeadVeies];
     
-    stockPlayer = [[EMStockPlayView alloc] init];
+    _stockPlayer = [[EMStockPlayView alloc] init];
+    _stockPlayer.stockCodeValue = self.stockCodeValue;
 
-    stockPlayer.delegate = self;
-    stockPlayer.URLString = self.URLString;
-    stockPlayer.titleLabel.text = self.title;
-    stockPlayer.closeBtn.hidden = NO;
+    _stockPlayer.delegate = self;
+    _stockPlayer.URLString = self.URLString;
+    _stockPlayer.titleLabel.text = self.title;
+    _stockPlayer.closeBtn.hidden = NO;
 
-    [self.view addSubview:stockPlayer];
-    [stockPlayer play];
+    [self.view addSubview:_stockPlayer];
+    [_stockPlayer play];
  
-    [stockPlayer mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_stockPlayer mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.headView.mas_bottom).with.offset(-1);
         make.left.equalTo(self.view).with.offset(0);
         make.right.equalTo(self.view).with.offset(0);
@@ -295,7 +379,7 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
     self.listCollectView.backgroundColor = [UIColor grayColor];
 
     [self.listCollectView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(stockPlayer.mas_bottom).offset(1);
+        make.top.equalTo(_stockPlayer.mas_bottom).offset(1);
         make.left.equalTo(self.view).with.offset(0);
         make.right.equalTo(self.view).with.offset(0);
         make.height.equalTo(@(120));
@@ -305,7 +389,7 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
     self.listlayout.minimumLineSpacing = 1;
     self.listlayout.minimumInteritemSpacing = 1;
     self.listlayout.itemSize = CGSizeMake( 208, 117);
-    //测试代码
+//  测试代码
 //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"测试" message:@"关闭播放器" preferredStyle:UIAlertControllerStyleAlert];
 //        [alertVC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -322,7 +406,6 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 //                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                        [self.navigationController popViewControllerAnimated:YES];
 //                    });
-//
 //                }else{
 //                    [self.navigationController popViewControllerAnimated:YES];
 //                }
@@ -337,10 +420,27 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 //    [self.listCollectView reloadData];
 //    [EMPlayDownloader sharedDownloader] downloadImageWithURL:(nullable NSURL *) options:(EMAudioDownloaderOperations) CompletedBlock:^(NSString * _Nullable filePath, NSError * _Nullable error, BOOL finished) {
 //    } Analyze:^(NSString * _Nullable audioFilepath, NSArray * _Nullable imagepathArray, NSError * _Nullable error, BOOL finished) {
-//
 //    }
+    
+//    EMDownloaderoperation *operation = [[EMDownloaderoperation alloc] initWithRequest:[NSURLRequest requestWithURL:requseturl] UrlSession:nil downloaderoptions:0];
+//    [operation addhandlesCompletedBlock:nil Analyze:^(NSString * _Nullable audioFilepath, NSArray * _Nullable imagepathArray, NSDictionary * _Nullable timeDict, NSError * _Nullable error, BOOL finished) {
+//            if(audioFilepath){
+//                NSLog(@"音频录音目录%@",audioFilepath);
+//            }
+//            if(audioFilepath){
+//                NSLog(@"图片路径%@",imagepathArray[0]);
+//            }
+//            if (timeDict.count > 0) {
+//                NSLog(@"图片路径%@",imagepathArray[0]);
+//            }
+//    }];
+//    [operation start];
+    [self requsetStockInfo];
+}
 
-
+- (BOOL)textView:(UITextView *)textView shouldInteractWithTextAttachment:(NSTextAttachment *)textAttachment inRange:(NSRange)characterRange{
+    NSLog(@"%@", textAttachment);
+    return NO;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -348,16 +448,19 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    if (self.resourceDict ) {
-        return  self.resourceDict.allKeys.count;
+    if (self.resourceDict) {
+        return  self.pictlist.count;
+    }else{
+        return 0;
     }
-    return  22;
 }
+
 
 - ( UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     EMPlayCellView *tempcell = [collectionView dequeueReusableCellWithReuseIdentifier:DetailCellIndentify forIndexPath:indexPath];
     if (tempcell) {
-        NSString *imagePath =[NSString stringWithFormat:@"%@stock%ld.png", [self.stockresource getfilebasepath],indexPath.row + 1];
+        EMStockInfoModel *tempfoModel = [self.pictlist objectAtIndex:indexPath.row];
+        NSString *imagePath =[NSString stringWithFormat:@"%@/%@/EMStockImageName%ld.png", [EMPlayResponse resourceRouthPath],self.stockCodeValue,tempfoModel.index];
         [tempcell setImageUrl:imagePath];
     }
     return tempcell;
@@ -365,17 +468,19 @@ static NSString *DetailCellIndentify = @"DetailCellIndentify";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+       EMStockInfoModel *tempfoModel = [self.pictlist objectAtIndex:indexPath.row];
+    self.titleLb.text = tempfoModel.tag;
+    [self.stockPlayer reseekToTimeToPlay:tempfoModel.time.doubleValue pageIndex:tempfoModel.index];
 }
 
 - (void)releaseWMPlayer
 {
-    [stockPlayer pause];
-    [stockPlayer removeFromSuperview];
-    stockPlayer = nil;
+    [_stockPlayer pause];
+    [_stockPlayer removeFromSuperview];
+    _stockPlayer = nil;
 }
 
-- (void)dealloc
-{
+- (void)dealloc{
     [self releaseWMPlayer];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     NSLog(@"DetailViewController deallco");

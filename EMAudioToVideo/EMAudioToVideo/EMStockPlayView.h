@@ -146,6 +146,8 @@ typedef NS_ENUM(NSUInteger,WMControlType) {
 
 ///---------------------------------------------------
 
+@property (nonatomic, strong) NSString  *stockCodeValue;
+
 
 /**
  *  播放
@@ -169,6 +171,11 @@ typedef NS_ENUM(NSUInteger,WMControlType) {
  *  @return double的一个时间点
  */
 - (double)currentTime;
+
+
+- (void)seekToTimeToPlay:(double)time;
+
+- (void)reseekToTimeToPlay:(double)time pageIndex:(NSInteger )rowvalue;
 
 /**
  * 重置播放器

@@ -45,6 +45,10 @@
     return self;
 }
 
+- (NSString *)cacheRouthpath{
+    return  @"";
+}
+
 - (void)dealloc{
     [self.session invalidateAndCancel];
     self.session = nil;
@@ -72,15 +76,15 @@
     return  _downloadQueue.maxConcurrentOperationCount;
 }
 
-- (EMPlayDownloadToken *)downloadImageWithURL:(NSURL *)url options:(EMAudioDownloaderOperations)options CompletedBlock:(EMAudioDownloaderCompletedBlock)completedBlcok Analyze:(EMAudioAnalysisCompletedBlock)analysisBlock{
+- (EMPlayDownloadToken *)downloadImageWithURL:(NSURL *)url stockInfo:(NSString *)stockCode options:(EMAudioDownloaderOperations)options ProgressBlock:(EMAudioDownloaderProgressBlock)progressBlcok CompletedBlock:(EMAudioDownloaderCompletedBlock)completedBlcok Analyze:(EMAudioAnalysisCompletedBlock)analysisBlock{
     __weak EMPlayDownloader *weakself = self;
-    return [self addcompletedBlock:completedBlcok Analyze:analysisBlock forURL:url createCallback:^EMDownloaderoperation *{
+
+    return [self addProgressBlock:progressBlcok completedBlock:completedBlcok Analyze:analysisBlock forURL:url createCallback:^EMDownloaderoperation *{
         __strong __typeof (weakself) strongself = weakself;
         NSTimeInterval timeoutInterval = strongself.downloadTimeout;
         if (timeoutInterval == 0.0) {
             timeoutInterval = 15.0;
         }
-        return nil;
         NSURLRequestCachePolicy cachePolicy = NSURLRequestReloadIgnoringCacheData;
         if (options & EMAudioDownloaderUseNSURLCache) {
             if (options & EMAudioDownloaderIgnoreCachedResponse) {
@@ -92,7 +96,7 @@
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:cachePolicy timeoutInterval:timeoutInterval];
         request.HTTPShouldUsePipelining = YES;
 
-        EMDownloaderoperation *operation = [[strongself.operetionClass alloc] initWithRequest:request UrlSession:strongself.session downloaderoptions:options];
+        EMDownloaderoperation *operation = [[strongself.operetionClass alloc] initWithRequest:request stockInfor:stockCode UrlSession:strongself.session downloaderoptions:options];
         if (options&EMAudioDownloaderHighPriority) {
             operation.queuePriority = NSOperationQueuePriorityHigh;
         }else{
@@ -129,7 +133,7 @@
     [self.downloadQueue cancelAllOperations];
 }
 
-- (nullable EMPlayDownloadToken *)addcompletedBlock:(EMAudioDownloaderCompletedBlock)completedBlock
+- (nullable EMPlayDownloadToken *)addProgressBlock:(EMAudioDownloaderProgressBlock)progressBlcok completedBlock:(EMAudioDownloaderCompletedBlock)completedBlock
                                            Analyze:(EMAudioAnalysisCompletedBlock)analysisBlock
                                                    forURL:(nullable NSURL *)url
                                            createCallback:(EMDownloaderoperation *(^)())createCallback {
@@ -147,7 +151,6 @@
         if (!operation) {
             operation = createCallback();
             self.urlOperations[url] = operation;
-
             __weak EMDownloaderoperation *woperation = operation;
             operation.completionBlock = ^{
                 EMDownloaderoperation *soperation = woperation;
@@ -157,8 +160,7 @@
                 };
             };
         }
-        id downloadOperationCancelToken = [operation addhandlesCompletedBlock:completedBlock Analyze:analysisBlock];
-
+        id downloadOperationCancelToken = [operation addProgressBlock: progressBlcok handlesCompletedBlock:completedBlock Analyze:analysisBlock];
         token = [EMPlayDownloadToken new];
         token.url = url;
         token.downloadOperationCancelToken = downloadOperationCancelToken;
@@ -167,18 +169,15 @@
     return token;
 }
 
-
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location{
     EMDownloaderoperation *downOperation = [self operationWithTask:downloadTask];
     [downOperation URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
 }
 
-
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes{
     EMDownloaderoperation *downOperation = [self operationWithTask:downloadTask];
     [downOperation URLSession:session downloadTask:downloadTask didResumeAtOffset:fileOffset expectedTotalBytes:expectedTotalBytes];
 }
-
 
 /* Sent periodically to notify the delegate of download progress. */
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite;{
@@ -186,9 +185,4 @@
     EMDownloaderoperation *downOperation = [self operationWithTask:downloadTask];
     [downOperation URLSession:session downloadTask:downloadTask didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
 }
-
-
-
-
-
 @end

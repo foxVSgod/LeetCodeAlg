@@ -11,4 +11,5 @@
 
 @interface DetailViewController : BaseViewController
 @property (nonatomic, retain)NSString * URLString;
+- (id)initWithStocKCode:(NSString *)code;
 @end

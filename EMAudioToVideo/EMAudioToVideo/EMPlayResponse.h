@@ -11,9 +11,9 @@
 typedef void(^EMAudioAnalysisCompletedBlock)( NSString *_Nullable audioFilepath,NSArray *_Nullable imagepathArray, NSDictionary *_Nullable timeDict,NSError * _Nullable error, BOOL finished);
 
 @interface EMPlayResponse : NSObject
-- (id _Nullable )initWithResponseFilepath:(NSURL*_Nullable)locationUrl NS_DESIGNATED_INITIALIZER;
+- (id _Nullable )initWithResponseFilepath:(NSURL*_Nullable)locationUrl stockInfro:(NSString *_Nullable)stockCode NS_DESIGNATED_INITIALIZER;
 - (void)setAnalysisCompleteBlock:(EMAudioAnalysisCompletedBlock _Nullable )finishedBlock;
 - (BOOL)AnalyzeAlldata;
-- (NSString *_Nullable)getfilebasepath;
++ (NSString *_Nullable)resourceRouthPath;
 @end
 

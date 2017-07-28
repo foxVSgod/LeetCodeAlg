@@ -12,6 +12,7 @@
 @interface EMPlayCellView(){
 }
 @property (nonatomic, strong) UIImageView *playview;
+@property (nonatomic, strong) NSString *playviewimageUrl;
 
 @end
 
@@ -34,7 +35,13 @@
 }
 
 - (void)setImageUrl:(NSString *)imageUrl{
-    [self.playview setImage:[UIImage imageNamed:imageUrl]];
+    if (self.playviewimageUrl !=imageUrl) {
+        UIImage *tempImage = [UIImage imageWithContentsOfFile:imageUrl];
+        if (tempImage) {
+            [self.playview setImage:tempImage];
+            self.playviewimageUrl = imageUrl;
+        }
+    }
 }
 
 - (void)initBasicViews{

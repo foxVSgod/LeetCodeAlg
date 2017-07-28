@@ -10,7 +10,7 @@
 #import "EMBaseNavigationController.h"
 #import "DetailViewController.h"
 #import "EMPlayResponse.h"
-
+#import "ViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -18,21 +18,15 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
     DetailViewController *rootViewcontroller = [[DetailViewController alloc] init];
-    EMBaseNavigationController *rootNagationcontroller = [[ EMBaseNavigationController alloc] initWithRootViewController:rootViewcontroller];
+    ViewController *tempView = [[ViewController alloc] init];
+    EMBaseNavigationController *rootNagationcontroller = [[ EMBaseNavigationController alloc] initWithRootViewController:tempView];
     self.window= [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = rootNagationcontroller;
     self.window.backgroundColor = [UIColor clearColor];
-
-
     //设置背景颜色  将该UIWindow对象设为主窗口、并显示出来
     [self.window makeKeyAndVisible];
-//    EMDownloadloader *downloader = [[EMDownloadloader alloc] init];
-//    [downloader startdownData];
-
-//    NSData *JSONData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"testrespon.dat" ofType:@"dat"]];
-//    EMPlayResponse *tempResponse = [[EMPlayResponse alloc] init];
-//    [tempResponse readAlldata];
     return YES;
 }
 

@@ -12,5 +12,7 @@
 @property (nonatomic, strong) NSString *titleVlaue;
 @property (nonatomic, strong) NSArray *picstrarray;
 @property (nonatomic, strong) NSString *voicepath;
+@property (nonatomic, strong) NSString *stockCode;
+@property (nonatomic, strong) NSDictionary *timeDict;
 - (id) initWithDicValue:(NSDictionary *)dict;
 @end

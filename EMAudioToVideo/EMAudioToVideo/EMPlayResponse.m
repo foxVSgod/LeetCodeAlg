@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSMutableArray *pictPathArray;
 @property (nonatomic, strong) NSString *imageBaseUrl;
 @property (nonatomic, copy) EMAudioAnalysisCompletedBlock completeBlock;
+@property (nonatomic, strong) NSString *stockValue;
 
 - (int8_t)readUnit8Bit;
 - (int16_t)readUnit16Bit;
@@ -37,12 +38,13 @@
 @implementation EMPlayResponse
 
 - (id)init{
-   return  [self initWithResponseFilepath:nil];
+    return  [self initWithResponseFilepath:nil stockInfro:nil];
 }
 
-- (id)initWithResponseFilepath:(NSURL*)locationUrl{
+- (id)initWithResponseFilepath:(NSURL*)locationUrl stockInfro:(NSString * _Nullable)stockCode{
     self = [super init];
     if (self) {
+        self.stockValue = stockCode;
         self.dataFilepath = [locationUrl copy];
         self.pictPathArray = [NSMutableArray array];
         self.pointIndex = 0;
@@ -54,17 +56,13 @@
     if (self.imageBaseUrl) {
         return self.imageBaseUrl;
     }else{
-        NSString *path_sandox = NSTemporaryDirectory();;
-        self.imageBaseUrl = [path_sandox stringByAppendingString:@"StockResource/"];
+        NSString *localpath = [EMPlayResponse resourceRouthPath];
+        self.imageBaseUrl = [localpath stringByAppendingString:[NSString stringWithFormat:@"%@/",self.stockValue]];
         if (![[NSFileManager defaultManager] fileExistsAtPath:self.imageBaseUrl]) {
-            [[NSFileManager defaultManager] createDirectoryAtPath:[path_sandox stringByAppendingString:@"StockResource"] withIntermediateDirectories:YES attributes:nil error:nil];
+            [[NSFileManager defaultManager] createDirectoryAtPath:[localpath stringByAppendingString:self.stockValue] withIntermediateDirectories:YES attributes:nil error:nil];
         }
         return self.imageBaseUrl;
     }
-}
-
-- (NSString *)getfilebasepath{
-    return [self getResourcepath];
 }
 
 - (NSDictionary *)getResourceDict{
@@ -79,18 +77,24 @@
     self.completeBlock = [finishedBlock copy];
 }
 
++ (NSString *)resourceRouthPath{
+    NSString *path_sandox = NSTemporaryDirectory();;
+    NSString *imageBaseUrl = [path_sandox stringByAppendingString:@"StockResource/"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:imageBaseUrl]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:[path_sandox stringByAppendingString:@"StockResource"] withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return imageBaseUrl;
+}
+
 - (BOOL)AnalyzeAlldata{
-    NSData *responsedata = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"testrespon" ofType:@"dat"]];
+    NSData *responsedata = [NSData dataWithContentsOfFile:self.dataFilepath.absoluteString];
     self.reponseData =[[NSData alloc] initWithData:responsedata];
     self.version = [self readUnit32Bit];
     self.objectCount = [self readUnit32Bit];
     self.imageCount = 0;
     self.playtimeDic = [NSMutableDictionary dictionary];
-     NSString *path_sandox = NSTemporaryDirectory();;
-    self.imageBaseUrl = [path_sandox stringByAppendingString:@"StockResource/"];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:self.imageBaseUrl]) {
-          [[NSFileManager defaultManager] createDirectoryAtPath:[path_sandox stringByAppendingString:@"StockResource"] withIntermediateDirectories:YES attributes:nil error:nil];
-    }
+    NSError *error = nil;
+    self.imageBaseUrl =[self getResourcepath];
     BOOL objectIndex = 0;
     while (self.pointIndex <= self.reponseData.length) {
         short filetype = [self readUnit8Bit];
@@ -111,24 +115,30 @@
                 if (wavdata) {
                     self.imageCount = self.imageCount + 1;
                     UIImage *tempImage = [UIImage imageWithData:wavdata];
-                    NSString *imageNamestr =[NSString stringWithFormat:@"%@-%ld.png",ImageNamePrefix,self.imageCount];
+                    NSString *imageNamestr =[NSString stringWithFormat:@"%@%ld.png",ImageNamePrefix,self.imageCount];
                     NSString *imagePath = [self.imageBaseUrl stringByAppendingString:[NSString stringWithFormat:@"%@",imageNamestr]];
                     [UIImagePNGRepresentation(tempImage) writeToFile:imagePath atomically:YES];
-                    [_playtimeDic setObject:[NSNumber numberWithInteger:playtime] forKey:imageNamestr];
+                    [_playtimeDic setObject:[NSNumber numberWithDouble:playtime/10.00] forKey:imageNamestr];
                     [self.pictPathArray addObject:imageNamestr];
                 }
             }
+        }else{
+            error = [[NSError alloc] initWithDomain:@"数据异常" code:4001 userInfo:nil];
+            break;
         }
         objectIndex = objectIndex + 1;
     }
-     NSInteger chechNum = [self readUnit32Bit];
-    BOOL success = chechNum == self.version;
-    NSError *error = nil;
-    if (!success) {
-//        error = [NSError alloc] initWithDomain:<#(nonnull NSErrorDomain)#> code:<#(NSInteger)#> userInfo:<#(nullable NSDictionary *)#>
+    BOOL success = false;
+    if (error) {
+
+    }else{
+       NSInteger chechNum = [self readUnit32Bit];
+       success = chechNum == self.version;
     }
+    NSInteger chechNum = [self readUnit32Bit];
+    success = chechNum == self.version;
     if (self.completeBlock) {
-        self.completeBlock( self.audiofilepath , self.pictPathArray, self.playtimeDic, error, success);
+        self.completeBlock(self.audiofilepath , self.pictPathArray, self.playtimeDic, error, success);
     }
     return success;
 }

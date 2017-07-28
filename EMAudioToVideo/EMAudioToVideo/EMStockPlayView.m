@@ -10,6 +10,7 @@
 #import "WMLightView.h"
 #import "Masonry.h"
 #import "EMPlayCellView.h"
+#import "EMPlayResponse.h"
 
 #define Window [UIApplication sharedApplication].keyWindow
 #define iOS8 [UIDevice currentDevice].systemVersion.floatValue >= 8.0
@@ -23,7 +24,7 @@
 //整个屏幕代表的时间
 #define TotalScreenTime 90
 #define LeastDistance 15
-@interface EMStockPlayView()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,AVAudioPlayerDelegate>{
+@interface EMStockPlayView()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,AVAudioPlayerDelegate,UIScrollViewDelegate>{
     //用来判断手势是否移动过
     BOOL _hasMoved;
     //记录触摸开始时的视频播放的时间
@@ -76,6 +77,7 @@
 @property (nonatomic, strong) NSTimer       *progressTime;
 @property (nonatomic, assign) NSTimeInterval  currentPlayTime;
 @property (nonatomic, strong) NSArray       *timeArray;
+@property (nonatomic, assign) double startContentOffsetX;
 @end
 
 static void *PlayViewCMTimeValue = &PlayViewCMTimeValue;
@@ -198,9 +200,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
         make.bottom.equalTo(self.bottomView).with.offset(0);
         make.width.mas_equalTo(50);
     }];
-
     self.playOrPauseBtn.selected = YES;//默认状态，即默认是不自动播放
-    
     MPVolumeView *volumeView = [[MPVolumeView alloc]init];
     for (UIControl *view in volumeView.subviews) {
         if ([view.superclass isSubclassOfClass:[UISlider class]]) {
@@ -265,7 +265,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
         make.bottom.equalTo(self.bottomView).with.offset(0);
         make.width.mas_equalTo(50);
     }];
-
     //leftTimeLabel显示左边的时间进度
     self.leftTimeLabel = [[UILabel alloc]init];
     self.leftTimeLabel.textAlignment = NSTextAlignmentLeft;
@@ -281,7 +280,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
         make.bottom.equalTo(self.bottomView).with.offset(0);
     }];
     self.leftTimeLabel.text = [self convertTime:0.0];//设置默认值
-    
     //rightTimeLabel显示右边的总时间
     self.rightTimeLabel = [[UILabel alloc]init];
     self.rightTimeLabel.textAlignment = NSTextAlignmentRight;
@@ -356,15 +354,36 @@ static NSString *playCellIndentify = @"playCellIndentify";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return  22;
+    return  self.timeArray.count;
 }
 
 - ( UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     EMPlayCellView *tempcell = [collectionView dequeueReusableCellWithReuseIdentifier:playCellIndentify forIndexPath:indexPath];
     if (tempcell) {
-        [tempcell setImageUrl:[NSString stringWithFormat:@"幻灯片%ld.JPG",indexPath.row + 1]];
+        NSString *imagePath =[NSString stringWithFormat:@"%@%@/EMStockImageName%ld.png", [EMPlayResponse resourceRouthPath],self.stockCodeValue,indexPath.row + 1];
+        [tempcell setImageUrl:imagePath];
     }
     return tempcell;
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{    //拖动前的起始坐标
+     self.startContentOffsetX = scrollView.contentOffset.x;
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
+    NSIndexPath *firstIndexPath  = nil;
+     double willEndContentOffsetX = scrollView.contentOffset.x;
+    if (willEndContentOffsetX > self.startContentOffsetX ) {
+        firstIndexPath = [[self.playerview indexPathsForVisibleItems] firstObject];
+    }else{
+        firstIndexPath = [[self.playerview indexPathsForVisibleItems] lastObject];
+    }
+    if (firstIndexPath.row ==self.timeArray.count - 2) {
+        return;
+    }else{
+        NSNumber *tempTimenumber = [self.timeArray objectAtIndex:firstIndexPath.row];
+        [self seekToTimeToPlay:tempTimenumber.doubleValue];
+    }
 }
 
 #pragma mark
@@ -424,7 +443,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
     CGPoint touchLocation = [sender locationInView:self.progressSlider];
     CGFloat value = (self.progressSlider.maximumValue - self.progressSlider.minimumValue) * (touchLocation.x/self.progressSlider.frame.size.width);
     [self.progressSlider setValue:value animated:YES];
-    [self.player setCurrentTime:value];
+    [self.player setCurrentTime:value*totalTime];
     if (self.player.rate != 1.f) {
         if ([self currentTime] == [self duration])
             [self setCurrentTime:0.f];
@@ -493,7 +512,6 @@ static NSString *playCellIndentify = @"playCellIndentify";
     } else if(self.state ==WMPlayerStatePlaying){
         [self pause];
     }else if(self.state ==WMPlayerStateFinished){
-        NSLog(@"ggggg");
         self.state = WMPlayerStatePlaying;
         [self.player play];
         self.playOrPauseBtn.selected = NO;
@@ -707,7 +725,9 @@ static NSString *playCellIndentify = @"playCellIndentify";
 #pragma mark - 播放进度
 - (void)updateProgress:(UISlider *)slider{
     self.isDragingSlider = NO;
-    [self.player setCurrentTime:self.player.currentTime];
+    double currentslider = slider.value ;
+    double currentTime = currentslider *self.player.duration;
+    [self.player setCurrentTime:currentTime];
 }
 
 #pragma mark
@@ -734,7 +754,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
 }
 
 - (void)syncScrubber{
-     double playerDuration = self.player.duration;
+    double playerDuration = self.player.duration;
     if (playerDuration <= 0){
         self.progressSlider.minimumValue = 0.0;
         return;
@@ -745,10 +765,46 @@ static NSString *playCellIndentify = @"playCellIndentify";
     self.leftTimeLabel.text = [self convertTime:nowTime];
     self.rightTimeLabel.text = [self convertTime:totalTime];
     if (self.isDragingSlider==YES) {//拖拽slider中，不更新slider的值
-        
+
     }else if(self.isDragingSlider==NO){
         [self.progressSlider setValue:(maxValue - minValue) * nowTime / totalTime + minValue];
     }
+    NSIndexPath *firstIndexPath = [[self.playerview indexPathsForVisibleItems] lastObject];
+    NSInteger currentPageIndex = firstIndexPath.row;
+    NSInteger currentPlayIndex =  [self findIndexOfCollectView:self.player.currentTime];
+    if (currentPageIndex !=currentPlayIndex&&currentPlayIndex <self.timeArray.count) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:currentPlayIndex inSection:0];
+        [self.playerview scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+    }
+}
+
+- (NSInteger)findIndexOfCollectView:(double )timevalue{
+    NSInteger findIndex = 0;
+    while (findIndex < self.timeArray.count) {
+        NSNumber *tempTime = [self.timeArray objectAtIndex:findIndex];
+        if (tempTime.doubleValue >= timevalue){
+            break;
+        }
+        findIndex = findIndex + 1;
+    }
+    findIndex = findIndex -1;
+    if (findIndex < 0) {
+        findIndex = 0;
+    }
+    if (findIndex >= self.timeArray.count ) {
+        findIndex = self.timeArray.count;
+    }
+    return findIndex;
+}
+
+
+- (void)reseekToTimeToPlay:(double)time pageIndex:(NSInteger )rowvalue{
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:rowvalue inSection:0];
+    if (rowvalue>=self.timeArray.count) {
+        rowvalue = self.timeArray.count - 1;
+    }
+    [self.playerview scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
+    [self seekToTimeToPlay:time];
 }
 /**
  *  跳到time处播放
@@ -767,7 +823,7 @@ static NSString *playCellIndentify = @"playCellIndentify";
         /* A timescale of 1 means you can only specify whole seconds to seek to. The timescale is the number of parts per second. Use 600 for video, as Apple recommends, since it is a product of the common video frame rates like 50, 60, 25 and 24 frames per second*/
         [self.player setCurrentTime:time];
         if (![self.player isPlaying]){
-            [self.player play];
+            [self play];
         }
     }
 }
@@ -1028,8 +1084,19 @@ NSString * calculateTimeWithTimeFormatter(long long timeSecond){
 //重置数据
 - (void)setNewDataView:(EMPlayDataModel *)dataModel{
     self.localfilePath = dataModel.voicepath;
+    self.stockCodeValue = dataModel.stockCode;
     self.stockInfo = dataModel.titleVlaue;
     self.picArray = [NSArray arrayWithArray:dataModel.picstrarray];
+    [self creatWMPlayerAndReadyToPlay];
+    NSMutableArray *temptimeArray = [NSMutableArray array];
+    for (int i = 1 ; i<= self.picArray.count ;i ++){
+        NSString *imageNamestr =[NSString stringWithFormat:@"EMStockImageName%d.png",i];
+        NSString *timevaluestr= [dataModel.timeDict objectForKey:imageNamestr];
+        [temptimeArray addObject:[NSNumber numberWithDouble:timevaluestr.doubleValue]];
+    }
+    self.timeArray = [NSArray arrayWithArray:temptimeArray];
+
+    [self.playerview reloadData];
 }
 
 //获取当前的旋转状态

@@ -18,6 +18,7 @@
 @property (assign, nonatomic) NSInteger maxConcurrentDownloads;
 @property (readonly, nonatomic) NSUInteger currentDownloadCount;
 @property (assign, nonatomic) NSTimeInterval downloadTimeout;
+@property (nonatomic, readonly) NSString *cacheRouthpath;
 /**
  *  Set the default URL credential to be set for request operations.
  */
@@ -25,7 +26,8 @@
 - (nonnull instancetype)initWithSessionConfiguration:(nullable NSURLSessionConfiguration *)sessionConfiguration NS_DESIGNATED_INITIALIZER;
 
 - (nullable EMPlayDownloadToken *)downloadImageWithURL:(nullable NSURL *)url
-                                               options:(EMAudioDownloaderOperations)options
+                                             stockInfo:(NSString *)stockCode
+                                               options:(EMAudioDownloaderOperations)options ProgressBlock:(EMAudioDownloaderProgressBlock)progressBlcok
                                          CompletedBlock:(nullable EMAudioDownloaderCompletedBlock)completedBlcok
                                                Analyze:(nullable EMAudioAnalysisCompletedBlock)analysisBlock;
 - (void)cancel:(nullable EMPlayDownloadToken *)token;
